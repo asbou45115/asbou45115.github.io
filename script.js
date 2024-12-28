@@ -36,19 +36,19 @@ window.onload = function() {
     typeWriter();
 };
 
-// Tab switching logic
-function showTab(tabName) {
-    const tabs = document.querySelectorAll('.tab-content');
-    const buttons = document.querySelectorAll('.tab-button');
+// // Tab switching logic
+// function showTab(tabName) {
+//     const tabs = document.querySelectorAll('.tab-content');
+//     const buttons = document.querySelectorAll('.tab-button');
 
-    tabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
+//     tabs.forEach(tab => {
+//         tab.classList.remove('active');
+//     });
 
-    buttons.forEach(button => {
-        button.classList.remove('active');
-    });
+//     buttons.forEach(button => {
+//         button.classList.remove('active');
+//     });
 
-    document.getElementById(tabName).classList.add('active');
-    document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-}
+//     document.getElementById(tabName).classList.add('active');
+//     document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+// }
