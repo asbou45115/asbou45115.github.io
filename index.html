@@ -6,12 +6,17 @@
     <meta name="description" content="Asif Portfolio">
     <title>Asbou</title>
     <link rel="stylesheet" href="styles.css">
-</head>
 <body>
+    <canvas id="canvas"></canvas>
     <div class="container">
         <header>
             <h1 id="typed-header"></h1>
         </header>
+
+        <!-- <div class="tabs">
+            <button class="tab-button active" onclick="showTab('projects')">Projects</button>
+            <button class="tab-button" onclick="showTab('about')">About Me</button>
+        </div> -->
 
         <!-- About Me Section -->
         <div id="about">
@@ -30,7 +35,27 @@
         <div id="projects">
             <h2>Projects</h2>
             <div class="projects-list">
-                <!-- Project 1 - Plinko -->
+                <!-- Particle dispersion sim  -->
+                <div class="project-item">
+                    <a href="https://asbou45115.github.io/particle-dispersion-simulation/" target="_blank">
+                        <img src="assets/particle-dispersion-sim.png" class="project-thumbnail-small">
+                    </a>
+                    <div class="project-details">
+                        <h3><a href="https://asbou45115.github.io/particle-dispersion-simulation/" target="_blank">Particle Dispersion simulation website</a></h3>
+                        <p>A JavaScript particle dispersion simulation that follows cursor to be added into background of html websites.</p>
+                        <div class="github-row">
+                            <a href="https://github.com/asbou45115/particle-dispersion-simulation" target="_blank" class="github-link">GitHub Repo</a>
+                            <div class="toggle-container">
+                                <label for="toggleSim" class="toggle-text">Try it out:</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleSim">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Plinko -->
                 <div class="project-item">
                     <a href="https://asbou45115.github.io/plinko-game/" target="_blank">
                         <img src="assets/plinko.png" class="project-thumbnail-small">
@@ -41,7 +66,7 @@
                         <a href="https://github.com/asbou45115/plinko-game" target="_blank" class="github-link">GitHub Repo</a>
                     </div>
                 </div>
-                <!-- Project 2 - ML  -->
+                <!-- ML stock predictor -->
                 <div class="project-item">
                     <a href="https://github.com/asbou45115/ML-stock-prediction?tab=readme-ov-file" target="_blank">
                         <img src="assets/ml-stock-predictor.png" class="project-thumbnail-small">
@@ -51,7 +76,7 @@
                         <p>A machine learning stock price predictor built with python.</p>
                     </div>
                 </div>
-                <!-- Project 3 - monkeytype typer  -->
+                <!-- monkeytype typer  -->
                 <div class="project-item">
                     <a href="https://github.com/asbou45115/monkeytype-typer" target="_blank">
                         <img src="assets/monkeytype.png" class="project-thumbnail-small">
@@ -61,7 +86,7 @@
                         <p>A monkeytype automatic type racer built with python.</p>
                     </div>
                 </div>                
-                <!-- Project 4 - pendulum sim  -->
+                <!-- pendulum sim  -->
                 <div class="project-item">
                     <a href="https://github.com/asbou45115/pendulum" target="_blank">
                         <img src="assets/pendulum.png" class="project-thumbnail-small">
@@ -76,5 +101,6 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- <script src="particleDispersionSim.js"></script> -->
 </body>
 </html>

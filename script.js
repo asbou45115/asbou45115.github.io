@@ -52,3 +52,24 @@ window.onload = function() {
 //     document.getElementById(tabName).classList.add('active');
 //     document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
 // }
+
+// Toggles the particle dispersion simulation onto the website
+document.getElementById('toggleSim').addEventListener('change', function() {
+    if (this.checked) {
+        // If checked, load the particle dispersion script
+        let script = document.createElement('script');
+        script.src = 'particleDispersionSim.js';
+        script.id = 'particleDispersionScript';
+        document.body.appendChild(script);
+
+        startSim();
+    } else {
+        // If unchecked, remove the script and clean up
+        stopSim();
+
+        let script = document.getElementById('particleDispersionScript');
+        if (script) {
+            script.remove();
+        }
+    }
+});

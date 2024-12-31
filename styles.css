@@ -179,3 +179,77 @@ footer {
 .personal-link:hover {
     text-decoration: underline;
 }
+
+/* Canvas settings */
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: black;
+}
+
+/* Toggle Switch for particle dispersion sim */
+.github-row {
+    display: flex;
+    align-items: center;
+    margin-top: 5px; /* Adjust for spacing between GitHub link and toggle */
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-top: 5px; 
+    margin-left: 360px;
+}
+
+.toggle-text {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    margin-right: 10px; /* Space between text and toggle switch */
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 30px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 30px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 23px;
+    width: 23px;
+    left: 3.5px;
+    bottom: 3.5px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(23px);
+}
