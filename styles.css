@@ -146,10 +146,10 @@ footer {
     flex-direction: column;
 }
 
-.project-details h3 {
+.project-details h3, a {
     margin: 0;
     font-size: 1.2rem;
-    color: #BB86FC;
+    color: #7a41c0;
 }
 
 .project-details p {
