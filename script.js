@@ -62,13 +62,14 @@ document.getElementById('toggleSim').addEventListener('change', function() {
         script.id = 'particleDispersionScript';
         document.body.appendChild(script);
 
-        let canvas = document.createElement('canvas');
-        canvas.id = 'canvas';
-        document.body.appendChild(canvas);
+        if (!document.getElementById('canvas')) {
+            let canvas = document.createElement('canvas');
+            canvas.id = 'canvas';
+            document.body.appendChild(canvas);
+        }
 
         startSim();
     } else {
-        // If unchecked, remove the script and clean up
         stopSim();
 
         // removeElement('canvas');
