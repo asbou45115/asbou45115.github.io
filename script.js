@@ -62,14 +62,25 @@ document.getElementById('toggleSim').addEventListener('change', function() {
         script.id = 'particleDispersionScript';
         document.body.appendChild(script);
 
+        let canvas = document.createElement('canvas');
+        canvas.id = 'canvas';
+        document.body.appendChild(canvas);
+
         startSim();
     } else {
         // If unchecked, remove the script and clean up
         stopSim();
 
-        let script = document.getElementById('particleDispersionScript');
-        if (script) {
-            script.remove();
-        }
+        // removeElement('canvas');
+        // removeElement('particleDispersionScript');
     }
 });
+
+// function removeElement(id) {
+//     let element = document.getElementById(id);
+//     if (id) {
+//         element.remove();
+//     }
+
+//     document.body.removeChild()
+// } 
