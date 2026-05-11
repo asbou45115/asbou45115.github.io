@@ -1,87 +1,104 @@
-const headerTexts = ["I am Asif.", "This is my website."]
-const speed = 100;
-const pauseTime = 500; // Pause time between each text
+const githubUser = "asbou45115";
+const endpointsList = document.getElementById("endpointsList");
+const statusMessage = document.getElementById("statusMessage");
+const refreshButton = document.getElementById("refreshButton");
 
-let textIndex = 0;
-let charIndex = 0;
-let isBackspace = false;
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+    });
+}
 
+function buildPagesUrl(repoName) {
+    if (repoName.toLowerCase() === `${githubUser}.github.io`) {
+        return `https://${githubUser}.github.io/`;
+    }
+    return `https://${githubUser}.github.io/${repoName}/`;
+}
 
-// Typing effect function
-function typeWriter() {
-    const currentText = headerTexts[textIndex];
-    const element = document.getElementById("typed-header");
+function setStatus(message) {
+    statusMessage.textContent = message;
+}
 
-    if (isBackspace) {
-        element.innerHTML = currentText.substring(0, charIndex--);
-    } else {
-        element.innerHTML = currentText.substring(0, charIndex++);
+function renderEndpoints(repos) {
+    endpointsList.innerHTML = "";
+
+    if (repos.length === 0) {
+        const emptyNode = document.createElement("li");
+        emptyNode.className = "empty-state";
+        emptyNode.textContent = "No public repositories with GitHub Pages enabled were found.";
+        endpointsList.appendChild(emptyNode);
+        return;
     }
 
-    const typeSpeed = isBackspace ? speed * 2 : speed;
-    setTimeout(typeWriter, typeSpeed);
+    repos.forEach((repo) => {
+        const endpointUrl = buildPagesUrl(repo.name);
+        const card = document.createElement("li");
+        card.className = "endpoint-card";
+        card.innerHTML = `
+            <h3 class="endpoint-name">${repo.name}</h3>
+            <a class="endpoint-url" href="${endpointUrl}" target="_blank" rel="noopener noreferrer">${endpointUrl}</a>
+            <p class="endpoint-meta">
+                Updated ${formatDate(repo.updated_at)} ·
+                <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">Repository</a>
+            </p>
+        `;
+        endpointsList.appendChild(card);
+    });
+}
 
-    if (!isBackspace && charIndex === currentText.length) {
-        setTimeout(() =>{
-            isBackspace = true;
-        }, pauseTime);
-    } else if (isBackspace && charIndex === 0) {
-        isBackspace = false;
-        textIndex = (textIndex + 1) % headerTexts.length;
+async function fetchAllPublicRepos() {
+    let page = 1;
+    const allRepos = [];
+
+    while (true) {
+        const response = await fetch(
+            `https://api.github.com/users/${githubUser}/repos?per_page=100&sort=updated&page=${page}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`GitHub API error (${response.status})`);
+        }
+
+        const repos = await response.json();
+        allRepos.push(...repos);
+
+        if (repos.length < 100) {
+            break;
+        }
+
+        page += 1;
+    }
+
+    return allRepos;
+}
+
+async function loadEndpoints() {
+    setStatus("Loading endpoints...");
+    refreshButton.disabled = true;
+
+    try {
+        const repos = await fetchAllPublicRepos();
+        const pagesRepos = repos
+            .filter((repo) => !repo.fork && repo.has_pages)
+            .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+        renderEndpoints(pagesRepos);
+        setStatus(`Loaded ${pagesRepos.length} endpoint${pagesRepos.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+        endpointsList.innerHTML = "";
+        const errorNode = document.createElement("li");
+        errorNode.className = "empty-state";
+        errorNode.textContent = "Unable to load endpoints right now. Please try again.";
+        endpointsList.appendChild(errorNode);
+        setStatus(error.message);
+    } finally {
+        refreshButton.disabled = false;
     }
 }
 
-// Initialize typing effect for header
-window.onload = function() {
-    typeWriter();
-};
-
-// // Tab switching logic
-// function showTab(tabName) {
-//     const tabs = document.querySelectorAll('.tab-content');
-//     const buttons = document.querySelectorAll('.tab-button');
-
-//     tabs.forEach(tab => {
-//         tab.classList.remove('active');
-//     });
-
-//     buttons.forEach(button => {
-//         button.classList.remove('active');
-//     });
-
-//     document.getElementById(tabName).classList.add('active');
-//     document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-// }
-
-// Toggles the particle dispersion simulation onto the website
-document.getElementById('toggleSim').addEventListener('change', function() {
-    if (this.checked) {
-        // If checked, load the particle dispersion script
-        let script = document.createElement('script');
-        script.src = 'particleDispersionSim.js';
-        script.id = 'particleDispersionScript';
-        document.body.appendChild(script);
-
-        if (!document.getElementById('canvas')) {
-            let canvas = document.createElement('canvas');
-            canvas.id = 'canvas';
-            document.body.appendChild(canvas);
-        }
-
-        startSim();
-    } else {
-        stopSim();
-
-        // removeElement('canvas');
-        // removeElement('particleDispersionScript');
-    }
-});
-
-// function removeElement(id) {
-//     let element = document.getElementById(id);
-//     if (id) {
-//         element.remove();
-//     }
-
-//     document.body.removeChild()
-// } 
+refreshButton.addEventListener("click", loadEndpoints);
+loadEndpoints();
