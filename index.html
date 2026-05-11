@@ -3,125 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Asif Portfolio">
-    <title>Asbou</title>
+    <meta name="description" content="Asif Bhuiyan - portfolio entry point for all GitHub Pages endpoints.">
+    <title>Asif | GitHub Pages Hub</title>
     <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-    <!-- <canvas id="canvas"></canvas> -->
-    <div class="container">
-        <header>
-            <h1 id="typed-header"></h1>
-        </header>
-
-        <!-- <div class="tabs">
-            <button class="tab-button active" onclick="showTab('projects')">Projects</button>
-            <button class="tab-button" onclick="showTab('about')">About Me</button>
-        </div> -->
-
-        <!-- About Me Section -->
-        <div id="about">
-            <h2>About Me</h2>
-            <p>
-                Currently a third year at UNSW pursuing a degree in computer science minoring in mathematics and am looking for experience in a software or technical field.
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">asbou45115.github.io</p>
+            <h1>Asif Bhuiyan</h1>
+            <p class="intro">
+                Computer Science student building small products, simulations, and experiments.
+                This page is the central index for all published GitHub Pages endpoints.
             </p>
-            <p>
-                You can find me here: 
-                <a href="https://github.com/asbou45115" target="_blank" class="personal-link">Github Profile</a>
-                and <a href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" class="personal-link">LinkedIn Profile</a>
-            </p>
-        </div>
-
-        <!-- Projects Section -->
-        <div id="projects">
-            <h2>Projects</h2>
-            <div class="projects-list">
-                <!-- Plinko -->
-                <div class="project-item">
-                    <a href="https://black-scholes-asbou45115.streamlit.app" target="_blank">
-                        <img src="assets/black-scholes.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://black-scholes-asbou45115.streamlit.app" target="_blank">Black Scholes option pricing website</a></h3>
-                        <p>A Black Scholes model P&L visualiser across range of spot prices and dates.</p>
-                        <a href="https://github.com/asbou45115/BlackScholes" target="_blank" class="github-link">GitHub Repo</a>
-                    </div>
-                </div>            
-                <!-- 2048 qlearning AI -->
-                <div class="project-item">
-                    <a href="https://github.com/asbou45115/2048-AI/tree/main" target="_blank">
-                        <img src="assets/2048-ai.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://github.com/asbou45115/2048-AI/tree/main" target="_blank">2048 qlearning AI github link</a></h3>
-                        <p>A qlearning 2048 game autosolver built with python.</p>
-                    </div>
-                </div>
-                <!-- Particle dispersion sim  -->
-                <div class="project-item">
-                    <a href="https://asbou45115.github.io/particle-dispersion-simulation/" target="_blank">
-                        <img src="assets/particle-dispersion-sim.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://asbou45115.github.io/particle-dispersion-simulation/" target="_blank">Particle Dispersion simulation website</a></h3>
-                        <p>A JavaScript particle dispersion simulation that follows cursor to be added into background of html websites.</p>
-                        <div class="github-row">
-                            <a href="https://github.com/asbou45115/particle-dispersion-simulation" target="_blank" class="github-link">GitHub Repo</a>
-                            <div class="toggle-container">
-                                <label for="toggleSim" class="toggle-text">Try on this page:</label>
-                                <label class="switch">
-                                    <input type="checkbox" id="toggleSim">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Plinko -->
-                <div class="project-item">
-                    <a href="https://asbou45115.github.io/plinko-game/" target="_blank">
-                        <img src="assets/plinko.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://asbou45115.github.io/plinko-game/" target="_blank">Plinko Game simulation website</a></h3>
-                        <p>A browser-based Plinko game built using JavaScript and HTML for educational purposes.</p>
-                        <a href="https://github.com/asbou45115/plinko-game" target="_blank" class="github-link">GitHub Repo</a>
-                    </div>
-                </div>
-                <!-- ML stock predictor -->
-                <div class="project-item">
-                    <a href="https://github.com/asbou45115/ML-stock-prediction?tab=readme-ov-file" target="_blank">
-                        <img src="assets/ml-stock-predictor.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://github.com/asbou45115/ML-stock-prediction?tab=readme-ov-file" target="_blank">ML Stock Price Predictor github link</a></h3>
-                        <p>A machine learning stock price predictor built with python.</p>
-                    </div>
-                </div>
-                <!-- monkeytype typer  -->
-                <div class="project-item">
-                    <a href="https://github.com/asbou45115/monkeytype-typer" target="_blank">
-                        <img src="assets/monkeytype.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://github.com/asbou45115/monkeytype-typer" target="_blank">Monkeytype Typer github link</a></h3>
-                        <p>A monkeytype automatic type racer built with python.</p>
-                    </div>
-                </div>                
-                <!-- pendulum sim  -->
-                <div class="project-item">
-                    <a href="https://github.com/asbou45115/pendulum" target="_blank">
-                        <img src="assets/pendulum.png" class="project-thumbnail-small">
-                    </a>
-                    <div class="project-details">
-                        <h3><a href="https://github.com/asbou45115/pendulum" target="_blank">Pendulum simulation github link</a></h3>
-                        <p>A simple pendulum simulation built with python.</p>
-                    </div>
-                </div>
+            <div class="hero-links">
+                <a href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <section class="endpoints">
+            <div class="section-header">
+                <h2>Published Endpoints</h2>
+                <button id="refreshButton" type="button">Refresh</button>
+            </div>
+            <p class="section-note">
+                Auto-loaded from public repositories with GitHub Pages enabled.
+            </p>
+            <div id="statusMessage" role="status" aria-live="polite"></div>
+            <ul id="endpointsList" class="endpoint-list"></ul>
+        </section>
+    </main>
 
     <script src="script.js"></script>
-    <!-- <script src="particleDispersionSim.js"></script> -->
 </body>
 </html>
