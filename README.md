@@ -1,6 +1,7 @@
 # asbou45115.github.io
 
 Personal entry-point website for published GitHub Pages endpoints.
+Check it out [here](asbou45115.github.io)
 
 ## Run locally (Python, port 8000)
 
