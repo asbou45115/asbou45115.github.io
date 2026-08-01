@@ -47,26 +47,76 @@ body {
     display: block;
 }
 
-.wave-equation {
+.wave-panel {
     position: fixed;
     z-index: 3;
     right: 1rem;
     bottom: calc(var(--dock-h) + 1.1rem);
-    margin: 0;
-    padding: 0.65rem 0.8rem;
-    max-width: min(360px, calc(100vw - 2rem));
+    width: min(320px, calc(100vw - 2rem));
+    padding: 0.7rem 0.8rem 0.75rem;
     font-family: var(--mono);
-    font-size: 0.68rem;
-    line-height: 1.45;
-    color: rgba(210, 225, 240, 0.78);
-    background: rgba(6, 12, 20, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    pointer-events: none;
+    color: rgba(210, 225, 240, 0.85);
+    background: rgba(6, 12, 20, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    user-select: none;
+}
+
+.wave-equation-text {
+    margin: 0 0 0.45rem;
+    font-size: 0.64rem;
+    line-height: 1.4;
     white-space: pre;
+    color: rgba(210, 225, 240, 0.78);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    pointer-events: none;
+}
+
+.wave-live {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.85rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.68rem;
+    color: var(--muted);
+}
+
+.wave-live b {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.wave-controls {
+    display: grid;
+    gap: 0.28rem;
+    max-height: 9.5rem;
+    overflow-y: auto;
+    padding-right: 0.15rem;
+    scrollbar-width: thin;
+}
+
+.wave-controls label {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr 2.2rem;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.62rem;
+    color: var(--muted);
+}
+
+.wave-controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.wave-val {
+    text-align: right;
+    color: rgba(210, 225, 240, 0.75);
+    font-variant-numeric: tabular-nums;
 }
 
 .desktop {
@@ -122,30 +172,36 @@ body {
 }
 
 .icon-art--folder {
-    background: linear-gradient(160deg, #e0b35a 0%, #c4892e 55%, #9a6a22 100%);
-    border-radius: 10px 10px 8px 8px;
+    background:
+        linear-gradient(165deg, rgba(140, 190, 200, 0.25), transparent 50%),
+        linear-gradient(160deg, #1c3344 0%, #243e52 55%, #162a38 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(160, 200, 210, 0.25);
 }
 
 .icon-art--folder::before {
     content: "";
     position: absolute;
-    top: 8px;
-    left: 7px;
-    width: 14px;
-    height: 6px;
-    background: #f0d089;
-    border-radius: 3px 3px 0 0;
+    top: 10px;
+    left: 9px;
+    right: 9px;
+    height: 3px;
+    background: #8eb8c4;
+    border-radius: 2px;
+    box-shadow: 0 7px 0 #6a96a6, 0 14px 0 #8eb8c4;
 }
 
 .icon-art--folder::after {
-    content: "";
+    content: "Π";
     position: absolute;
-    left: 6px;
-    right: 6px;
-    bottom: 8px;
-    height: 22px;
-    background: #f2c66a;
-    border-radius: 3px;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding-top: 10px;
+    color: rgba(200, 220, 230, 0.55);
+    font-family: var(--font);
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .icon-art--terminal {
@@ -278,6 +334,12 @@ body {
     color: var(--muted);
     font-size: 0.75rem;
     white-space: nowrap;
+}
+
+.folder-status {
+    color: var(--muted);
+    font-size: 0.88rem;
+    padding: 0.5rem 0.15rem;
 }
 
 @keyframes winIn {
@@ -547,20 +609,22 @@ body {
 }
 
 .dock-glyph--folder {
-    background: linear-gradient(160deg, #e0b35a, #c4892e);
+    background: linear-gradient(160deg, #2a4a5c, #1a3040);
     border-radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(142, 184, 196, 0.45);
     position: relative;
 }
 
 .dock-glyph--folder::before {
     content: "";
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 6px;
-    height: 3px;
-    background: #f0d089;
+    top: 4px;
+    left: 3px;
+    right: 3px;
+    height: 2px;
+    background: #8eb8c4;
     border-radius: 1px;
+    box-shadow: 0 4px 0 #6a96a6;
 }
 
 .dock-glyph--gh {
@@ -625,11 +689,19 @@ body {
 }
 
 @media (max-width: 700px) {
-    .wave-equation {
+    .wave-panel {
         right: 0.5rem;
         bottom: calc(var(--dock-h) + 2.6rem);
-        font-size: 0.58rem;
-        padding: 0.45rem 0.55rem;
+        width: min(280px, calc(100vw - 1rem));
+        padding: 0.5rem 0.55rem;
+    }
+
+    .wave-equation-text {
+        font-size: 0.56rem;
+    }
+
+    .wave-controls {
+        max-height: 7rem;
     }
 
     .desktop {

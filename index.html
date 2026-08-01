@@ -13,7 +13,29 @@
 </head>
 <body>
     <canvas id="wallpaper" aria-hidden="true"></canvas>
-    <pre id="waveEquation" class="wave-equation" aria-hidden="true"></pre>
+
+    <aside class="wave-panel" id="wavePanel" aria-label="Wave equation controls">
+        <pre id="waveEquation" class="wave-equation-text"></pre>
+        <div class="wave-live">
+            <span>χ <b data-out="amp">—</b></span>
+            <span>φ <b data-out="phi">—</b></span>
+            <span>t <b data-out="t">—</b></span>
+        </div>
+        <div class="wave-controls">
+            <label>amp <input type="range" data-wave="ampScale" min="0.15" max="1.2" step="0.01" value="0.55"> <span class="wave-val">0.55</span></label>
+            <label>speed <input type="range" data-wave="timeScale" min="0.2" max="2.5" step="0.05" value="1"> <span class="wave-val">1.00</span></label>
+            <label>φ gain <input type="range" data-wave="mousePhi" min="0" max="6" step="0.1" value="3.2"> <span class="wave-val">3.20</span></label>
+            <label>χ gain <input type="range" data-wave="mouseChop" min="0" max="2.5" step="0.05" value="1.4"> <span class="wave-val">1.40</span></label>
+            <label>A₁ <input type="range" data-wave="A0" min="0" max="1.8" step="0.05" value="1"> <span class="wave-val">1.00</span></label>
+            <label>A₂ <input type="range" data-wave="A1" min="0" max="1.8" step="0.05" value="0.55"> <span class="wave-val">0.55</span></label>
+            <label>A₃ <input type="range" data-wave="A2" min="0" max="1.8" step="0.05" value="0.7"> <span class="wave-val">0.70</span></label>
+            <label>A₄ <input type="range" data-wave="A3" min="0" max="1.8" step="0.05" value="0.45"> <span class="wave-val">0.45</span></label>
+            <label>k₁ <input type="range" data-wave="k0" min="0" max="0.6" step="0.01" value="0.14"> <span class="wave-val">0.14</span></label>
+            <label>k₂ <input type="range" data-wave="k1" min="0" max="0.6" step="0.01" value="0.33"> <span class="wave-val">0.33</span></label>
+            <label>ω₁ <input type="range" data-wave="w0" min="0.2" max="5" step="0.05" value="2.4"> <span class="wave-val">2.40</span></label>
+            <label>ω₂ <input type="range" data-wave="w1" min="0.2" max="5" step="0.05" value="3.1"> <span class="wave-val">3.10</span></label>
+        </div>
+    </aside>
 
     <div class="desktop" id="desktop">
         <button class="icon" type="button" data-app="projects" title="Projects">

@@ -1,45 +1,36 @@
 import { createOceanWallpaper } from "./ocean.js";
 
-const GITHUB = "https://github.com/asbou45115";
+const GITHUB_USER = "asbou45115";
+const GITHUB = `https://github.com/${GITHUB_USER}`;
 
-const apps = {
+/** Optional richer blurbs for known repos; everything else comes from the API */
+const curated = {
     black_hole: {
-        id: "black_hole",
         title: "Black Hole",
         kicker: "WebGL · GLSL",
-        desc: "Interactive Schwarzschild black hole with gravitational lensing, a relativistically beamed accretion disk, and a procedural starfield.",
-        live: "https://asbou45115.github.io/black_hole/",
-        repo: "https://github.com/asbou45115/black_hole",
-        aliases: ["black_hole", "blackhole", "bh"]
+        desc: "Interactive Schwarzschild black hole with gravitational lensing, a relativistically beamed accretion disk, and a procedural starfield."
     },
-    particles: {
-        id: "particles",
+    "particle-dispersion-simulation": {
         title: "Particles",
         kicker: "Simulation",
-        desc: "Particle dispersion in the browser — motion, density, and patterns from simple rules.",
-        live: "https://asbou45115.github.io/particle-dispersion-simulation/",
-        repo: "https://github.com/asbou45115/particle-dispersion-simulation",
-        aliases: ["particles", "particle", "dispersion"]
+        desc: "Particle dispersion in the browser — motion, density, and patterns from simple rules."
     },
-    plinko: {
-        id: "plinko",
+    "plinko-game": {
         title: "Plinko",
         kicker: "Interactive",
-        desc: "Drop chips through pegs and watch probability stack into multipliers.",
-        live: "https://asbou45115.github.io/plinko-game/",
-        repo: "https://github.com/asbou45115/plinko-game",
-        aliases: ["plinko"]
+        desc: "Drop chips through pegs and watch probability stack into multipliers."
     },
-    ascii: {
-        id: "ascii",
+    ascii_renderer: {
         title: "ASCII Renderer",
         kicker: "Python · Pages",
-        desc: "Turn images into dense ASCII compositions — save as text or an image.",
-        live: "https://asbou45115.github.io/ascii_renderer/",
-        repo: "https://github.com/asbou45115/ascii_renderer",
-        aliases: ["ascii", "ascii_renderer"]
+        desc: "Turn images into dense ASCII compositions — save as text or an image."
     }
 };
+
+/** @type {Map<string, object>} */
+const apps = new Map();
+let projectsLoadState = "idle"; // idle | loading | ready | error
+let projectsError = "";
 
 const windowsRoot = document.getElementById("windows");
 const dockTasks = document.getElementById("dockTasks");
@@ -51,6 +42,145 @@ const tplAbout = document.getElementById("tpl-about");
 
 let zCounter = 10;
 const openWindows = new Map();
+
+function buildPagesUrl(repoName) {
+    if (repoName.toLowerCase() === `${GITHUB_USER}.github.io`) {
+        return `https://${GITHUB_USER}.github.io/`;
+    }
+    return `https://${GITHUB_USER}.github.io/${repoName}/`;
+}
+
+function prettyTitle(name) {
+    return name
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+async function fetchAllPublicRepos() {
+    let page = 1;
+    const all = [];
+    while (true) {
+        const response = await fetch(
+            `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated&page=${page}`
+        );
+        if (!response.ok) {
+            throw new Error(`GitHub API error (${response.status})`);
+        }
+        const batch = await response.json();
+        all.push(...batch);
+        if (batch.length < 100) {
+            break;
+        }
+        page += 1;
+    }
+    return all;
+}
+
+async function loadPublishedProjects() {
+    if (projectsLoadState === "loading" || projectsLoadState === "ready") {
+        return;
+    }
+    projectsLoadState = "loading";
+    try {
+        const repos = await fetchAllPublicRepos();
+        const pages = repos
+            .filter((repo) => !repo.fork && repo.has_pages)
+            .filter((repo) => repo.name.toLowerCase() !== `${GITHUB_USER}.github.io`)
+            .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+        apps.clear();
+        for (const repo of pages) {
+            const meta = curated[repo.name] || {};
+            const app = {
+                id: repo.name,
+                title: meta.title || prettyTitle(repo.name),
+                kicker: meta.kicker || repo.language || "Pages",
+                desc: meta.desc || repo.description || "Published GitHub Pages project.",
+                live: buildPagesUrl(repo.name),
+                repo: repo.html_url,
+                aliases: [repo.name.toLowerCase(), repo.name.toLowerCase().replace(/-/g, "_")]
+            };
+            apps.set(app.id, app);
+        }
+        projectsLoadState = "ready";
+        projectsError = "";
+        refreshOpenFolderLists();
+    } catch (err) {
+        projectsLoadState = "error";
+        projectsError = err.message || "Failed to load projects";
+        refreshOpenFolderLists();
+    }
+}
+
+function refreshOpenFolderLists() {
+    const folder = openWindows.get("projects");
+    if (!folder) {
+        return;
+    }
+    populateFolderList(folder.querySelector(".folder-list"), folder.querySelector(".folder-hint"));
+}
+
+function populateFolderList(list, hint) {
+    list.innerHTML = "";
+    if (projectsLoadState === "loading" || projectsLoadState === "idle") {
+        if (hint) {
+            hint.textContent = "Fetching published Pages…";
+        }
+        const li = document.createElement("li");
+        li.className = "folder-status";
+        li.textContent = "Loading…";
+        list.appendChild(li);
+        return;
+    }
+    if (projectsLoadState === "error") {
+        if (hint) {
+            hint.textContent = "Could not reach GitHub API";
+        }
+        const li = document.createElement("li");
+        li.className = "folder-status";
+        li.textContent = projectsError;
+        list.appendChild(li);
+        const retry = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "folder-item";
+        btn.innerHTML = `<span class="folder-item-name">Retry</span>`;
+        btn.addEventListener("click", () => {
+            projectsLoadState = "idle";
+            loadPublishedProjects();
+            populateFolderList(list, hint);
+        });
+        retry.appendChild(btn);
+        list.appendChild(retry);
+        return;
+    }
+
+    if (hint) {
+        hint.textContent = `${apps.size} published endpoint${apps.size === 1 ? "" : "s"}`;
+    }
+
+    if (apps.size === 0) {
+        const li = document.createElement("li");
+        li.className = "folder-status";
+        li.textContent = "No public repos with GitHub Pages enabled.";
+        list.appendChild(li);
+        return;
+    }
+
+    for (const app of apps.values()) {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "folder-item";
+        btn.innerHTML = `
+            <span class="folder-item-name">${app.title}</span>
+            <span class="folder-item-meta">${app.kicker}</span>
+        `;
+        btn.addEventListener("click", () => openProject(app.id));
+        li.appendChild(btn);
+        list.appendChild(li);
+    }
+}
 
 function updateClock() {
     const now = new Date();
@@ -160,7 +290,7 @@ function wireWindowChrome(win, id) {
 }
 
 function openProject(appKey) {
-    const app = apps[appKey];
+    const app = apps.get(appKey);
     if (!app) {
         return null;
     }
@@ -193,26 +323,16 @@ function openProjectsFolder() {
     const id = "projects";
     if (openWindows.has(id)) {
         focusWindow(openWindows.get(id));
+        loadPublishedProjects();
         return openWindows.get(id);
     }
 
     const node = tplFolder.content.firstElementChild.cloneNode(true);
     node.dataset.title = "Projects";
     const list = node.querySelector(".folder-list");
-
-    Object.values(apps).forEach((app) => {
-        const li = document.createElement("li");
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "folder-item";
-        btn.innerHTML = `
-            <span class="folder-item-name">${app.title}</span>
-            <span class="folder-item-meta">${app.kicker}</span>
-        `;
-        btn.addEventListener("click", () => openProject(app.id));
-        li.appendChild(btn);
-        list.appendChild(li);
-    });
+    const hint = node.querySelector(".folder-hint");
+    populateFolderList(list, hint);
+    loadPublishedProjects();
 
     placeWindow(node, openWindows.size);
     wireWindowChrome(node, id);
@@ -257,7 +377,12 @@ function appendTerminal(text, className = "") {
 
 function resolveProjectAlias(name) {
     const key = name.toLowerCase();
-    return Object.values(apps).find((app) => app.aliases.includes(key) || app.id === key);
+    for (const app of apps.values()) {
+        if (app.aliases.includes(key) || app.id.toLowerCase() === key) {
+            return app;
+        }
+    }
+    return null;
 }
 
 function runCommand(raw) {
@@ -290,10 +415,15 @@ function runCommand(raw) {
             );
             break;
         case "ls":
+            if (projectsLoadState !== "ready") {
+                appendTerminal("projects still loading — try `projects`", "term-line--err");
+                loadPublishedProjects();
+                break;
+            }
             appendTerminal(
-                Object.values(apps)
-                    .map((a) => `${a.id.padEnd(14)} ${a.title}`)
-                    .join("\n")
+                [...apps.values()]
+                    .map((a) => `${a.id.padEnd(28)} ${a.title}`)
+                    .join("\n") || "(empty)"
             );
             break;
         case "projects":
@@ -302,7 +432,12 @@ function runCommand(raw) {
             break;
         case "open": {
             if (!arg) {
-                appendTerminal("usage: open <black_hole|particles|plinko|ascii>", "term-line--err");
+                appendTerminal("usage: open <repo-name>", "term-line--err");
+                break;
+            }
+            if (projectsLoadState !== "ready") {
+                appendTerminal("projects still loading…", "term-line--err");
+                loadPublishedProjects();
                 break;
             }
             const app = resolveProjectAlias(arg);
@@ -316,7 +451,7 @@ function runCommand(raw) {
         }
         case "github":
             window.open(GITHUB, "_blank", "noopener,noreferrer");
-            appendTerminal("opening github.com/asbou45115 …", "term-line--ok");
+            appendTerminal(`opening github.com/${GITHUB_USER} …`, "term-line--ok");
             break;
         case "whoami":
             appendTerminal("guest");
@@ -330,8 +465,8 @@ function runCommand(raw) {
                     "Shell:  asifsh 0.1",
                     "WM:     odysseywm",
                     "Theme:  wine-dark sea",
-                    "Host:   github.com/asbou45115",
-                    "Ship:   πολύτροπος bound for Ίθάκη"
+                    `Host:   github.com/${GITHUB_USER}`,
+                    "Sea:    Scylla · Sirens · Charybdis"
                 ].join("\n")
             );
             break;
@@ -361,7 +496,7 @@ function initTerminal(win) {
     terminalReady = true;
 
     appendTerminal("Welcome aboard asif@desktop. Type 'help' to begin.");
-    appendTerminal("Wallpaper: Odyssey galley — mouse stirs η(x,t).");
+    appendTerminal("Wallpaper: Odyssey galley — tune η(x,t) in the wave panel.");
 
     const form = win.querySelector("#terminalForm");
     const input = win.querySelector("#terminalInput");
@@ -422,7 +557,7 @@ function launch(appId) {
     if (appId === "projects") {
         return openProjectsFolder();
     }
-    if (apps[appId]) {
+    if (apps.has(appId)) {
         return openProject(appId);
     }
     return null;
@@ -439,8 +574,9 @@ function bindLaunchers() {
 
 createOceanWallpaper(
     document.getElementById("wallpaper"),
-    document.getElementById("waveEquation")
+    document.getElementById("wavePanel")
 );
 bindLaunchers();
 updateClock();
 setInterval(updateClock, 15_000);
+loadPublishedProjects();

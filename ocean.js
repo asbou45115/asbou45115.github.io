@@ -1,6 +1,6 @@
 /**
  * Odyssey ASCII wallpaper — Odysseus' galley on a live multi-sine sea.
- * Mouse stirs the waves; the ship rides η(x,t).
+ * Mouse stirs the waves; the ship rides η(x,t). Wave params are editable.
  */
 
 const WATER_SURFACE = "~≈∽-~._·~≈~-";
@@ -8,17 +8,6 @@ const WATER_MID = "≈~-≈~.≈~-≈";
 const WATER_DEEP = ".:·. :·.";
 const FOAM = "*^\"'`°";
 
-const WAVE_TERMS = [
-    { A: 1.00, k: 0.14, w: 2.40 },
-    { A: 0.55, k: 0.33, w: 3.10 },
-    { A: 0.70, k: 0.07, w: 1.20 },
-    { A: 0.45, k: 0.00, w: 0.90 }
-];
-
-/*
- * Odysseus' ship — after the stormy galley painting:
- * high aphlaston stern (left), olive sail, bronze boar prow (right), bank of oars.
- */
 const SHIP = [
     "                                                              .",
     "                                                             /|",
@@ -71,44 +60,81 @@ const ROCK_RIGHT = [
     "   \\#~/"
 ];
 
+/* Multi-headed Scylla clinging to the cliff */
+const SCYLLA = [
+    "   (@@) (@@)",
+    "  \\/||\\/||\\/",
+    " (@@)\\||/(@@)",
+    "  \\_\\||||/_/",
+    "    |####|",
+    "   /######\\",
+    "  <########>"
+];
+
+/* Whirlpool beside Scylla */
+const WHIRLPOOL = [
+    "    .~-~.",
+    "  ~( @@@ )~",
+    " ~(@(@(@)@)~",
+    "  ~( @@@ )~",
+    "    '~-~'"
+];
+
+/* Bottom-left siren rocks (painting composition) */
+const SIREN_ROCKS = [
+    "        /\\      /\\",
+    "       /**\\  /#**\\",
+    "      /#**#\\/#*##*\\",
+    "     /**###||####**\\",
+    "    /#*####||#####*#\\",
+    "   |##*###/  \\####**|",
+    "   |####/  ..  \\###*|",
+    "   |###/  .##.  \\##*|",
+    "  /###|  .####.  |##\\",
+    " /####| .##()()##. |##\\",
+    "|#####\\_/##____##_/###|",
+    " \\####|  o  oo  o  |##/",
+    "  \\###\\___________/##/",
+    "   \\##~~~~~~~~~~~~~##/",
+    "    \\________________/"
+];
+
+/* Three sirens standing / kneeling on the rocks */
 const SIRENS = [
-    "  ~♪~",
-    " (@@)",
-    "~/||\\~"
+    "   \\o/   .o.   o/",
+    "    |   /|_|\\  |",
+    "   / \\  | | | / \\",
+    "  ~~~~~'~~~~~'~~~~~"
 ];
 
+/* Polyphemus the cyclops */
 const CYCLOPS = [
-    " .--.",
-    "( o  )",
-    " '--'"
+    "   .----.",
+    "  / .||. \\",
+    " |  (••)  |",
+    "  \\  \\/  /",
+    "   '----'"
 ];
 
-const MYTH_LABELS = [
-    { text: "Μοῦσα, ἔννεπε", dx: 0.06, dy: 0.06 },
-    { text: "πολύτροπος Ὀδυσσεύς", dx: 0.38, dy: 0.04 },
-    { text: "Ίθάκη →", dx: 0.82, dy: 0.1 },
-    { text: "ΟΥΤΙΣ", dx: 0.14, dy: 0.18 },
-    { text: "Σκύλλα", dx: 0.02, dy: 0.34 },
-    { text: "Χάρυβδις", dx: 0.88, dy: 0.36 },
-    { text: "Σειρῆνες", dx: 0.7, dy: 0.16 },
-    { text: "sing of the man of twists & turns", dx: 0.28, dy: 0.14 }
+/* Distant Charybdis maw (far water) */
+const CHARYBDIS = [
+    "   .~(@)~.",
+    "  ~(@@@@)~",
+    " ~(@(@)@)~",
+    "  ~(@@@@)~",
+    "   '~(@)~'"
+];
+
+const ITHACA = [
+    "   _.--._",
+    "  /######\\",
+    " /###/\\###\\",
+    "|####  ####|"
 ];
 
 function hash(n) {
     const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
     return x - Math.floor(x);
-}
-
-function waveHeight(col, time, pointer) {
-    const mousePull = (pointer.x - 0.5) * 3.2;
-    const chop = 0.85 + pointer.y * 1.4;
-    let h = 0;
-    for (const term of WAVE_TERMS) {
-        const phase = term.k * col - term.w * time + mousePull * (0.4 + term.k * 2);
-        h += term.A * Math.sin(phase);
-    }
-    h += 0.35 * Math.sin(col * 0.22 + time * 2.0 + pointer.x * 5);
-    return h * chop;
 }
 
 function shipColor(ch, row, shipH) {
@@ -158,17 +184,17 @@ function rockColor(ch) {
     return "#454550";
 }
 
-function formatEquation(pointer, time) {
-    const chop = (0.85 + pointer.y * 1.4).toFixed(2);
-    const phi = ((pointer.x - 0.5) * 3.2).toFixed(2);
-    const t = time.toFixed(1);
-    return [
-        "η(x,t) = Σᵢ Aᵢ · χ · sin(kᵢ x − ωᵢ t + φ)",
-        `χ = ${chop}   φ = ${phi}   t = ${t}s`,
-        "A = [1.00, 0.55, 0.70, 0.45]",
-        "k = [0.14, 0.33, 0.07, 0]",
-        "ω = [2.40, 3.10, 1.20, 0.90]"
-    ];
+function mythColor(ch) {
+    if (ch === "@" || ch === "o" || ch === "•") {
+        return "rgba(255, 120, 90, 0.85)";
+    }
+    if (ch === "♪" || ch === "~") {
+        return "rgba(255, 210, 130, 0.7)";
+    }
+    if (ch === "#" || ch === "<" || ch === ">") {
+        return "rgba(90, 70, 90, 0.75)";
+    }
+    return "rgba(210, 190, 170, 0.7)";
 }
 
 function stamp(write, art, originC, originR, colorFn) {
@@ -184,9 +210,23 @@ function stamp(write, art, originC, originR, colorFn) {
     }
 }
 
-export function createOceanWallpaper(canvas, equationEl) {
+export function createOceanWallpaper(canvas, hud) {
     const preferLess = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const ctx = canvas.getContext("2d", { alpha: false });
+
+    /** Mutable wave model — drive from the HUD sliders */
+    const params = {
+        terms: [
+            { A: 1.00, k: 0.14, w: 2.40 },
+            { A: 0.55, k: 0.33, w: 3.10 },
+            { A: 0.70, k: 0.07, w: 1.20 },
+            { A: 0.45, k: 0.00, w: 0.90 }
+        ],
+        ampScale: 0.55,
+        mousePhi: 3.2,
+        mouseChop: 1.4,
+        timeScale: 1
+    };
 
     let cols = 0;
     let rows = 0;
@@ -208,6 +248,23 @@ export function createOceanWallpaper(canvas, equationEl) {
 
     const shipW = Math.max(...SHIP.map((r) => r.length));
     const shipH = SHIP.length;
+
+    const eqReadout = hud?.querySelector?.("#waveEquation") || hud;
+    const ampOut = hud?.querySelector?.("[data-out=amp]");
+    const phiOut = hud?.querySelector?.("[data-out=phi]");
+    const tOut = hud?.querySelector?.("[data-out=t]");
+
+    function waveHeight(col, time) {
+        const mousePull = (pointer.x - 0.5) * params.mousePhi;
+        const chop = 0.85 + pointer.y * params.mouseChop;
+        let h = 0;
+        for (const term of params.terms) {
+            const phase = term.k * col - term.w * time + mousePull * (0.4 + term.k * 2);
+            h += term.A * Math.sin(phase);
+        }
+        h += 0.35 * Math.sin(col * 0.22 + time * 2.0 + pointer.x * 5);
+        return h * chop;
+    }
 
     function measure() {
         const w = window.innerWidth;
@@ -282,20 +339,49 @@ export function createOceanWallpaper(canvas, equationEl) {
         }
     }
 
+    function bindControls() {
+        if (!hud) {
+            return;
+        }
+        hud.querySelectorAll("[data-wave]").forEach((input) => {
+            const key = input.dataset.wave;
+            const apply = () => {
+                const v = Number(input.value);
+                if (key === "ampScale" || key === "mousePhi" || key === "mouseChop" || key === "timeScale") {
+                    params[key] = v;
+                } else if (key.startsWith("A")) {
+                    params.terms[Number(key.slice(1))].A = v;
+                } else if (key.startsWith("k")) {
+                    params.terms[Number(key.slice(1))].k = v;
+                } else if (key.startsWith("w")) {
+                    params.terms[Number(key.slice(1))].w = v;
+                }
+                const out = input.parentElement?.querySelector(".wave-val");
+                if (out) {
+                    out.textContent = v.toFixed(2);
+                }
+            };
+            input.addEventListener("input", apply);
+            apply();
+        });
+    }
+
     function drawFrame(now) {
         if (!running) {
             return;
         }
 
-        const speed = preferLess ? 0.55 : 1;
+        const speed = (preferLess ? 0.55 : 1) * params.timeScale;
         const time = ((now - start) * 0.001) * speed;
         const w = window.innerWidth;
         const h = window.innerHeight;
-        const horizon = Math.floor(rows * 0.42);
-        const amp = Math.max(4, Math.floor(rows * 0.09));
+        const horizon = Math.floor(rows * 0.48);
+        const amp = Math.max(4, Math.floor(rows * 0.1));
         const scroll = time * 14;
+        // Keep crests inside the canvas — never slice the top of a wave
+        const surfaceMin = Math.floor(rows * 0.22);
+        const surfaceMax = Math.floor(rows * 0.72);
 
-        // Stormy wine-dark sea sky
         const bg = ctx.createLinearGradient(0, 0, 0, h);
         bg.addColorStop(0, "#1a1528");
         bg.addColorStop(0.28, "#2a2438");
@@ -304,7 +390,6 @@ export function createOceanWallpaper(canvas, equationEl) {
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, w, h);
 
-        // Warm break in the clouds
         const glow = ctx.createRadialGradient(w * 0.55, h * 0.18, 0, w * 0.55, h * 0.22, h * 0.35);
         glow.addColorStop(0, "rgba(200, 160, 90, 0.18)");
         glow.addColorStop(1, "rgba(200, 160, 90, 0)");
@@ -317,8 +402,13 @@ export function createOceanWallpaper(canvas, equationEl) {
         chars.fill(null);
         colors.fill(null);
 
+        let minSurface = surfaceMax;
         for (let c = 0; c < cols; c++) {
-            surfaces[c] = horizon + waveHeight(c, time, pointer) * amp * 0.55;
+            const raw = horizon + waveHeight(c, time) * amp * params.ampScale;
+            surfaces[c] = Math.min(surfaceMax, Math.max(surfaceMin, raw));
+            if (surfaces[c] < minSurface) {
+                minSurface = surfaces[c];
+            }
         }
 
         const targetCol = cols * (0.08 + pointer.x * 0.5);
@@ -338,36 +428,25 @@ export function createOceanWallpaper(canvas, equationEl) {
         const shipColRound = Math.round(shipCol);
         const roll = Math.round(shipRoll);
 
-        // Cloud texture hints
-        for (let r = 0; r < horizon - 4; r++) {
+        // Clouds / stars above the water band
+        const skyBottom = Math.floor(minSurface) - 2;
+        for (let r = 0; r < skyBottom; r++) {
             for (let c = 0; c < cols; c++) {
                 const n = hash(c * 0.15 + r * 3.1 + Math.floor(time * 0.05));
-                if (n > 0.82 && r < horizon * 0.55) {
+                if (n > 0.82 && r < rows * 0.3) {
                     write(c, r, n > 0.93 ? "~" : "-", `rgba(160, 150, 170, ${0.08 + n * 0.12})`);
                 }
-                const star = hash(c * 17 + r * 91);
-                if (star > 0.996) {
+                if (hash(c * 17 + r * 91) > 0.996) {
                     write(c, r, ".", "rgba(220, 200, 150, 0.4)");
                 }
             }
         }
 
-        // Mythology labels in the sky / margins
-        for (const g of MYTH_LABELS) {
-            const baseC = Math.floor(cols * g.dx);
-            const baseR = Math.floor(rows * g.dy);
-            for (let i = 0; i < g.text.length; i++) {
-                write(baseC + i, baseR, g.text[i], "rgba(220, 195, 140, 0.38)");
-            }
-        }
+        // Ithaca on the horizon
+        stamp(write, ITHACA, Math.floor(cols * 0.78), Math.max(1, skyBottom - 5), () => "rgba(70, 95, 75, 0.55)");
 
-        // Ithaca on the far horizon
-        const isleC = Math.floor(cols * 0.8);
-        const isleR = horizon - 3;
-        stamp(write, ["  _.--._", " /######\\", "/###/\\###\\"], isleC, isleR - 2, () => "rgba(70, 90, 70, 0.55)");
-
-        // Sea first
-        const waterTop = Math.max(0, horizon - amp - 2);
+        // Sea — start from the highest crest so nothing is clipped
+        const waterTop = Math.max(0, Math.floor(minSurface) - 2);
         for (let r = waterTop; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 const surface = surfaces[c];
@@ -376,7 +455,7 @@ export function createOceanWallpaper(canvas, equationEl) {
                     continue;
                 }
                 if (depth < 0) {
-                    if (waveHeight(c, time, pointer) > 0.95 && hash(c + time * 8) > 0.55) {
+                    if (waveHeight(c, time) > 0.95 && hash(c + time * 8) > 0.55) {
                         write(c, r, "·", "rgba(170, 210, 230, 0.3)");
                     }
                     continue;
@@ -392,42 +471,83 @@ export function createOceanWallpaper(canvas, equationEl) {
             }
         }
 
-        // Clashing rocks / Scylla (left) with spray
-        const leftRockR = Math.round(sample(6)) - ROCK_LEFT.length + 3;
-        stamp(write, ROCK_LEFT, 1, leftRockR, (ch) => rockColor(ch));
+        // Tall left cliff (background) + Scylla + whirlpool beside her
+        const leftRockR = Math.round(sample(8)) - ROCK_LEFT.length + 2;
+        stamp(write, ROCK_LEFT, 0, leftRockR, (ch) => rockColor(ch));
         for (let s = 0; s < 10; s++) {
-            const sc = 2 + (s % 5);
-            const sr = leftRockR + 2 + ((s * 3 + (time * 4 | 0)) % 6);
-            write(sc, sr, FOAM[s % FOAM.length], "rgba(220, 240, 255, 0.75)");
+            write(1 + (s % 4), leftRockR + 2 + ((s * 3 + (time * 4 | 0)) % 6), FOAM[s % FOAM.length], "rgba(220, 240, 255, 0.7)");
+        }
+        const scyllaC = 1;
+        const scyllaR = Math.max(0, leftRockR - 5);
+        stamp(write, SCYLLA, scyllaC, scyllaR, mythColor);
+        stamp(write, CYCLOPS, 3, Math.max(0, leftRockR - 11), mythColor);
+
+        // Whirlpool in the water immediately beside Scylla
+        const whirlC = scyllaC + 14;
+        const whirlR = Math.round(sample(whirlC + 3)) - 2;
+        const whirlSpin = Math.floor(time * 3) % 2;
+        stamp(write, WHIRLPOOL, whirlC, whirlR, (ch) => {
+            if (ch === "@") {
+                return whirlSpin ? "rgba(30, 80, 110, 0.9)" : "rgba(50, 110, 140, 0.85)";
+            }
+            return "rgba(130, 200, 220, 0.8)";
+        });
+
+        // Bottom-left siren island (like the painting) — rocks sit on the waterline
+        const sirenRockW = Math.max(...SIREN_ROCKS.map((r) => r.length));
+        const sirenRockC = 1;
+        const sirenWater = Math.round(sample(sirenRockC + sirenRockW * 0.5));
+        const sirenRockR = Math.min(rows - SIREN_ROCKS.length - 1, sirenWater - SIREN_ROCKS.length + 5);
+        stamp(write, SIREN_ROCKS, sirenRockC, sirenRockR, (ch) => {
+            if (ch === "o" || ch === "(" || ch === ")") {
+                return "rgba(220, 210, 190, 0.75)"; // bones / skulls
+            }
+            if (ch === "~") {
+                return "rgba(140, 190, 210, 0.55)";
+            }
+            return rockColor(ch);
+        });
+
+        // Sirens standing on top of those rocks
+        const sirensC = sirenRockC + 4;
+        const sirensR = Math.max(0, sirenRockR - SIRENS.length + 2);
+        stamp(write, SIRENS, sirensC, sirensR, (ch) => {
+            if (ch === "o" || ch === "O") {
+                return "rgba(240, 210, 180, 0.9)";
+            }
+            if (ch === "~") {
+                return "rgba(180, 80, 90, 0.7)";
+            }
+            return "rgba(230, 200, 170, 0.85)";
+        });
+
+        // Music notes drifting from the sirens toward the ship
+        const noteChars = ["♪", "♫", "♩", "♬", "*", "~"];
+        for (let n = 0; n < 12; n++) {
+            const phase = time * (0.7 + (n % 4) * 0.15) + n * 1.7;
+            const drift = ((phase * 4) % 28);
+            const bob = Math.sin(phase * 2.2) * 2;
+            const nc = Math.round(sirensC + 10 + drift);
+            const nr = Math.round(sirensR - 1 + bob - drift * 0.15);
+            if (nc < cols * 0.55) {
+                write(nc, nr, noteChars[n % noteChars.length], `rgba(255, 220, 140, ${0.45 + (n % 3) * 0.15})`);
+            }
         }
 
-        // Far rocks / Charybdis side (right)
+        // Right cliff + distant Charybdis
         const rightRockC = cols - ROCK_RIGHT[0].length - 2;
         const rightRockR = Math.round(sample(rightRockC + 4)) - ROCK_RIGHT.length + 2;
         stamp(write, ROCK_RIGHT, rightRockC, rightRockR, (ch) => rockColor(ch));
-
-        // Birds near right cliffs
         write(rightRockC - 2, rightRockR - 1, "v", "rgba(40, 40, 45, 0.7)");
         write(rightRockC + 3, rightRockR - 2, "v", "rgba(40, 40, 45, 0.55)");
-        write(rightRockC + 6, rightRockR - 1, "^", "rgba(40, 40, 45, 0.5)");
 
-        // Sirens on a mid-right rock ledge
-        stamp(write, SIRENS, Math.floor(cols * 0.68), Math.max(2, rightRockR - 1), (ch) => {
+        const charyC = Math.floor(cols * 0.86);
+        const charyR = Math.round(sample(charyC)) - 1;
+        stamp(write, CHARYBDIS, charyC, charyR, (ch) => {
             if (ch === "@") {
-                return "rgba(230, 200, 160, 0.7)";
+                return "rgba(40, 90, 120, 0.85)";
             }
-            if (ch === "♪") {
-                return "rgba(255, 210, 120, 0.65)";
-            }
-            return "rgba(200, 180, 150, 0.55)";
-        });
-
-        // Cyclops peeking from left cliff
-        stamp(write, CYCLOPS, 3, Math.max(1, leftRockR - 3), (ch) => {
-            if (ch === "o") {
-                return "rgba(255, 80, 60, 0.85)";
-            }
-            return "rgba(180, 160, 140, 0.5)";
+            return "rgba(120, 190, 210, 0.75)";
         });
 
         // Ship
@@ -439,12 +559,7 @@ export function createOceanWallpaper(canvas, equationEl) {
                 if (ch === " ") {
                     continue;
                 }
-                write(
-                    shipColRound + c + rowShift,
-                    shipRowBase + r,
-                    ch,
-                    shipColor(ch, r, shipH)
-                );
+                write(shipColRound + c + rowShift, shipRowBase + r, ch, shipColor(ch, r, shipH));
             }
         }
 
@@ -464,8 +579,30 @@ export function createOceanWallpaper(canvas, equationEl) {
         ctx.fillStyle = vig;
         ctx.fillRect(0, 0, w, h);
 
-        if (equationEl && (eqTick++ % 6 === 0)) {
-            equationEl.textContent = formatEquation(pointer, time).join("\n");
+        if (eqTick++ % 6 === 0) {
+            const chop = (0.85 + pointer.y * params.mouseChop).toFixed(2);
+            const phi = ((pointer.x - 0.5) * params.mousePhi).toFixed(2);
+            if (eqReadout && eqReadout.tagName === "PRE") {
+                const A = params.terms.map((t) => t.A.toFixed(2)).join(", ");
+                const k = params.terms.map((t) => t.k.toFixed(2)).join(", ");
+                const om = params.terms.map((t) => t.w.toFixed(2)).join(", ");
+                eqReadout.textContent = [
+                    "η(x,t) = Σᵢ Aᵢ · χ · sin(kᵢ x − ωᵢ t + φ)",
+                    `χ = ${chop}   φ = ${phi}   t = ${time.toFixed(1)}s`,
+                    `A = [${A}]`,
+                    `k = [${k}]`,
+                    `ω = [${om}]`
+                ].join("\n");
+            }
+            if (ampOut) {
+                ampOut.textContent = chop;
+            }
+            if (phiOut) {
+                phiOut.textContent = phi;
+            }
+            if (tOut) {
+                tOut.textContent = `${time.toFixed(1)}s`;
+            }
         }
 
         raf = requestAnimationFrame(drawFrame);
@@ -491,10 +628,12 @@ export function createOceanWallpaper(canvas, equationEl) {
     document.addEventListener("visibilitychange", onVisibility);
 
     measure();
-    shipBob = Math.floor(rows * 0.42);
+    bindControls();
+    shipBob = Math.floor(rows * 0.48);
     raf = requestAnimationFrame(drawFrame);
 
     return {
+        params,
         destroy() {
             running = false;
             cancelAnimationFrame(raf);

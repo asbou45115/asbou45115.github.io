@@ -15,8 +15,8 @@ Open `http://localhost:8000` (ES modules require HTTP, not `file://`).
 ## What’s on the desktop
 
 - **Wallpaper** — ASCII Odyssean galley; mouse stirs `η(x,t)` (`ocean.js`)
-- **Wave HUD** — live equation parameters, bottom-right
-- **Projects/** — folder window for Black Hole, Particles, Plinko, ASCII
+- **Wave HUD** — live `η(x,t)` readout + sliders for A, k, ω, amp, speed
+- **Projects/** — folder that auto-fetches public repos with GitHub Pages enabled
 - **Terminal / GitHub** — shell + profile link
 
 ## Deploy
