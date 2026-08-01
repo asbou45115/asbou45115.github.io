@@ -60,52 +60,115 @@ const ROCK_RIGHT = [
     "   \\#~/"
 ];
 
-/* Multi-headed Scylla clinging to the cliff */
+/*
+ * Scylla / hydra (Unicode braille) — animated on the right near the whirlpool.
+ * Braille blanks (U+2800) are transparent via stamp().
+ */
 const SCYLLA = [
-    "   (@@) (@@)",
-    "  \\/||\\/||\\/",
-    " (@@)\\||/(@@)",
-    "  \\_\\||||/_/",
-    "    |####|",
-    "   /######\\",
-    "  <########>"
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⢠",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣦⡀⠀⢸⣆",
+    "⠀⠀⠀⠀⣠⣦⣤⣀⣀⣤⣤⣀⡀⠀⣀⣠⡆⠀⠀⠀⠀⠀⠀⠤⠒⠛⣛⣛⣻⣿⣶⣾⣿⣦⣄⢿⣆",
+    "⠀⠀⠀⠸⠿⢿⣿⣿⣿⣯⣭⣿⣿⣿⣿⣋⣀⠀⠀⠀⠀⠀⠀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀",
+    "⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣓⠢⠄⢠⡾⢻⣿⣿⣿⣿⡟⠁⠀⠀⠈⠙⢿⣿⣿⣯⡻⣿⡄",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠙⢿⣿⣿⣿⣷⣄⠁⠀⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣷⣄⡀",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣷⣌⢧⠀⣿⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⢀⠉⠙⠛⠛⠿⣿⣿⣿⡆",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⡀⠠⢻⡟⢿⣿⣿⣿⣿⣧⣄⣀⠀⠘⢶⣄⣀⠀⠀⠈⢻⠿⠁",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣾⠀⠀⠀⠻⣈⣙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣷⣦⡀",
+    "⠀⠀⠀⠈⠲⣄⠀⠀⣀⡤⠤⠀⠀⠀⢠⣿⣿⣿⡿⣿⠇⠀⠀⠐⠺⢉⣡⣴⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⣿⣿⣶⣿⣿⣿⣶⣶⡀",
+    "⠀⠀⠀⠀⢠⣿⣴⣿⣷⣶⣦⣤⡀⠀⢸⣿⣿⣿⠇⠏⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⠟⢿⣿⣿⣿⣷⠀⠹⣿⣿⠿⠿⠛⠻⠿⣿⠇",
+    "⠀⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣷⣯⡂⢸⣿⣿⣿⠀⠀⠀⠀⢀⠾⣻⣿⣿⣿⠟⠀⠀⠈⣿⣿⣿⣿⡇⠀⠀⣀⣀⡀⠀⢠⡞⠉",
+    "⠀⠀⢸⣟⣽⣿⣯⠀⠀⢹⣿⣿⣿⡟⠼⣿⣿⣿⣇⠀⠀⠀⠠⢰⣿⣿⣿⣿⡄⠀⠀⠀⣸⣿⣿⣿⡇⠀⢀⣤⣼⣿⣷⣾⣷⡀",
+    "⠀⢀⣾⣿⡿⠟⠋⠀⠀⢸⣿⣿⣿⣿⡀⢿⣿⣿⣿⣦⠀⠀⠀⢺⣿⣿⣿⣿⣿⣄⠀⠀⣿⣿⣿⣿⡇⠐⣿⣿⣿⣿⠿⣿⣿⡿⣦",
+    "⠀⢻⣿⠏⠀⠀⠀⠀⢠⣿⣿⣿⡟⡿⠀⠀⢻⣿⣿⣿⣷⣤⡀⠘⣷⠻⣿⣿⣿⣿⣷⣼⣿⣿⣿⣿⣇⣾⣿⣿⣿⠁⠀⢼⣿⣿⣿⣆",
+    "⠀⠀⠈⠀⠀⠀⠀⠀⢸⣿⣿⣿⡗⠁⠀⠀⠀⠙⢿⣿⣿⣿⣿⣷⣾⣆⡙⣿⣿⣿⣿⣿⣿⣿⣿⣿⠌⣾⣿⣿⣿⣆⠀⠀⠀⠉⠻⣿⡷",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠘⣟⣿⣿⣿⡆⠀⠀⠀⠀⠙⠁",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣿⣶⣤⣤⣤⣀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⢈⣿⣿⣿⡇",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣠⣤⣤⣶⣿⣿⣿⠟",
+    "⠀⠀⠀⠀⠀⠀⢀⣠⣤⣄⠀⠠⢶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⡁",
+    "⢀⣀⠀⣠⣀⡠⠞⣿⣿⣿⣿⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣴⣿⣷⣦⣄⣀⢿⡽⢻⣦",
+    "⠻⠶⠾⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠋"
 ];
 
-/* Whirlpool beside Scylla */
-const WHIRLPOOL = [
-    "    .~-~.",
-    "  ~( @@@ )~",
-    " ~(@(@(@)@)~",
-    "  ~( @@@ )~",
-    "    '~-~'"
+const SCYLLA_W = Math.max(...SCYLLA.map((r) => r.length));
+const SCYLLA_H = SCYLLA.length;
+
+/* Larger whirlpool — two spin frames */
+const WHIRLPOOL_A = [
+    "      .~~-~~-~~.",
+    "    ~(  @@ @@@  )~",
+    "   ~( @@(@ @)@@ )~",
+    "  ~( @(@(@(@)@)@ )~",
+    "   ~( @@(@ @)@@ )~",
+    "    ~(  @@@ @@  )~",
+    "      '~~-~~-~~'"
 ];
 
-/* Bottom-left siren rocks (painting composition) */
+const WHIRLPOOL_B = [
+    "      .-~~-~~-~~.",
+    "    ~(  @@@ @@  )~",
+    "   ~( @@( @ @)@@ )~",
+    "  ~( @(@@(@)@@)@ )~",
+    "   ~( @@( @ @)@@ )~",
+    "    ~(  @@ @@@  )~",
+    "      '~~-~~-~~'"
+];
+
+/* Bottom-left siren rocks — larger static shore */
 const SIREN_ROCKS = [
-    "        /\\      /\\",
-    "       /**\\  /#**\\",
-    "      /#**#\\/#*##*\\",
-    "     /**###||####**\\",
-    "    /#*####||#####*#\\",
-    "   |##*###/  \\####**|",
-    "   |####/  ..  \\###*|",
-    "   |###/  .##.  \\##*|",
-    "  /###|  .####.  |##\\",
-    " /####| .##()()##. |##\\",
-    "|#####\\_/##____##_/###|",
-    " \\####|  o  oo  o  |##/",
-    "  \\###\\___________/##/",
-    "   \\##~~~~~~~~~~~~~##/",
-    "    \\________________/"
+    "                /\\              /\\",
+    "               /**\\          /#**\\",
+    "              /#**#\\   /\\   /#*##*\\",
+    "             /**###\\ /#**\\ /#*####*\\",
+    "            /#*####\\/#*##\\/#*#####*#\\",
+    "           |##*####||####||########**|",
+    "           |#####*/  \\##/  \\#######**|",
+    "          /#####/  ..      .. \\#####*\\",
+    "         /#####/  .##.    .##. \\#####\\",
+    "        /#####|  .####.  .####. |#####\\",
+    "       /######| .##()()##()()##.|######\\",
+    "      |#######\\_/##____####____##_/#####|",
+    "      |#######|  o oo o  oo o o  |######|",
+    "      |#######|                  |######|",
+    "       \\######\\_________________/######/",
+    "        \\#####~~~~~~~~~~~~~~~~~~~#####/",
+    "         \\####~~~~~~~~~~~~~~~~~~~####/",
+    "          \\_________________________/"
 ];
 
-/* Three sirens standing / kneeling on the rocks */
-const SIRENS = [
-    "   \\o/   .o.   o/",
-    "    |   /|_|\\  |",
-    "   / \\  | | | / \\",
-    "  ~~~~~'~~~~~'~~~~~"
+/*
+ * Siren figure (Unicode braille) — single detailed figure on the rocks.
+ * Braille blanks (U+2800) are treated as transparent.
+ */
+const SIREN = [
+    "⠀⠀⠀⣠⣄⣀",
+    "⢀⡖⠋⠁⠀⠉⠙⢦",
+    "⣾⣠⣤⣤⠀⠀⠀⠈⡇",
+    "⠙⠁⣼⠀⡇⠀⢀⣼⣁⣀⣀",
+    "⣀⡤⠖⠁⠀⠀⣀⡾⠋⠁⠀⢈⡱⠦⢤⡀",
+    "⢰⡏⣁⠀⠀⠀⠀⠀⢹⠿⣤⠄⠀⣀⣤⣦⡤⠹⡄",
+    "⠀⠙⢻⡀⠀⠀⠑⠦⠞⣠⣿⠋⣿⡏⣹⡿⠓⠚⠁",
+    "⠀⠀⠈⣇⠀⠈⠁⠒⢺⣧⣈⡷⣀⣴⣿⠇",
+    "⠀⠀⠀⠈⠉⠉⠉⠉⡟⠀⡉⠀⠸⠿⡄⠀⠀⠀⢰⡿⢳⡀",
+    "⠀⠀⠀⠀⠀⠀⠀⢸⠁⢰⣿⣶⣦⣤⣷⡀⠀⣠⣾⣿⡿⠟⠃",
+    "⠀⠀⠀⠀⠀⠀⢀⠎⢠⠿⡙⠛⠛⢿⡏⡵⠋⡰⠃",
+    "⠀⠀⠀⠀⠀⠀⡌⢀⡎⢠⢷⠀⠀⢺⠙⡦⠞",
+    "⠀⠀⠀⠀⠀⢰⣃⠞⠀⢸⣘⠧⣀⣀⣷⠳⢄⡀",
+    "⠀⠀⠀⢀⣴⣿⠋⠀⠀⠀⢻⡉⠉⠙⠋⠀⠀⠙⢦⡀",
+    "⠀⠀⠀⠛⠉⠀⠀⠀⠀⠀⠀⠻⣄⡀⠀⠀⠀⠀⠀⢳⡄",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠒⠢⢄⡀⠀⠀⣧",
+    "⠀⠀⠀⠀⣀⣤⡤⠶⢦⡤⢄⡀⠀⠀⠀⠀⠀⢹⠀⠀⡞",
+    "⠀⢀⡴⠾⠧⠯⠍⣑⠢⠌⣑⠪⠳⣦⣀⣀⣠⠞⢀⡾⠁",
+    "⠰⠛⠋⠉⠉⠒⠲⠄⣉⣒⣢⣬⣿⣿⢿⡿⠖⠊⠁",
+    "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣽⣿⠟⡺⠋⡝⠁",
+    "⠀⠀⠀⠀⠀⠀⠀⣰⢟⡵⢁⠔⢁⡼⠁",
+    "⠀⠀⠀⠀⠀⠀⣰⢃⠎⡠⢊⣠⠞⠁",
+    "⠀⠀⠀⠀⠀⠀⣿⢃⣾⠴⠋",
+    "⠀⠀⠀⠀⠀⠈⣷⣿⠏",
+    "⠀⠀⠀⠀⠀⠀⢙⡟"
 ];
+
+/* Mouth roughly here within SIREN (row, col offsets) for music notes */
+const SIREN_MOUTH = { r: 6, c: 10 };
 
 /* Polyphemus the cyclops */
 const CYCLOPS = [
@@ -114,15 +177,6 @@ const CYCLOPS = [
     " |  (••)  |",
     "  \\  \\/  /",
     "   '----'"
-];
-
-/* Distant Charybdis maw (far water) */
-const CHARYBDIS = [
-    "   .~(@)~.",
-    "  ~(@@@@)~",
-    " ~(@(@)@)~",
-    "  ~(@@@@)~",
-    "   '~(@)~'"
 ];
 
 const ITHACA = [
@@ -202,7 +256,8 @@ function stamp(write, art, originC, originR, colorFn) {
         const line = art[r];
         for (let c = 0; c < line.length; c++) {
             const ch = line[c];
-            if (ch === " ") {
+            // Skip ASCII space and braille blank
+            if (ch === " " || ch === "\u2800") {
                 continue;
             }
             write(originC + c, originR + r, ch, colorFn(ch, r, art.length));
@@ -471,83 +526,112 @@ export function createOceanWallpaper(canvas, hud) {
             }
         }
 
-        // Tall left cliff (background) + Scylla + whirlpool beside her
-        const leftRockR = Math.round(sample(8)) - ROCK_LEFT.length + 2;
-        stamp(write, ROCK_LEFT, 0, leftRockR, (ch) => rockColor(ch));
-        for (let s = 0; s < 10; s++) {
-            write(1 + (s % 4), leftRockR + 2 + ((s * 3 + (time * 4 | 0)) % 6), FOAM[s % FOAM.length], "rgba(220, 240, 255, 0.7)");
-        }
-        const scyllaC = 1;
-        const scyllaR = Math.max(0, leftRockR - 5);
-        stamp(write, SCYLLA, scyllaC, scyllaR, mythColor);
-        stamp(write, CYCLOPS, 3, Math.max(0, leftRockR - 11), mythColor);
-
-        // Whirlpool in the water immediately beside Scylla
-        const whirlC = scyllaC + 14;
-        const whirlR = Math.round(sample(whirlC + 3)) - 2;
-        const whirlSpin = Math.floor(time * 3) % 2;
-        stamp(write, WHIRLPOOL, whirlC, whirlR, (ch) => {
-            if (ch === "@") {
-                return whirlSpin ? "rgba(30, 80, 110, 0.9)" : "rgba(50, 110, 140, 0.85)";
-            }
-            return "rgba(130, 200, 220, 0.8)";
-        });
-
-        // Bottom-left siren island (like the painting) — rocks sit on the waterline
-        const sirenRockW = Math.max(...SIREN_ROCKS.map((r) => r.length));
-        const sirenRockC = 1;
-        const sirenWater = Math.round(sample(sirenRockC + sirenRockW * 0.5));
-        const sirenRockR = Math.min(rows - SIREN_ROCKS.length - 1, sirenWater - SIREN_ROCKS.length + 5);
+        // Static bottom-left rocks + detailed braille siren
+        const sirenRockC = 0;
+        const sirenRockR = rows - SIREN_ROCKS.length - 1;
         stamp(write, SIREN_ROCKS, sirenRockC, sirenRockR, (ch) => {
             if (ch === "o" || ch === "(" || ch === ")") {
-                return "rgba(220, 210, 190, 0.75)"; // bones / skulls
+                return "rgba(220, 210, 190, 0.8)";
             }
             if (ch === "~") {
                 return "rgba(140, 190, 210, 0.55)";
             }
+            if (/[a-z]/.test(ch)) {
+                return "rgba(50, 52, 58, 0.55)";
+            }
             return rockColor(ch);
         });
 
-        // Sirens standing on top of those rocks
-        const sirensC = sirenRockC + 4;
-        const sirensR = Math.max(0, sirenRockR - SIRENS.length + 2);
-        stamp(write, SIRENS, sirensC, sirensR, (ch) => {
-            if (ch === "o" || ch === "O") {
-                return "rgba(240, 210, 180, 0.9)";
+        const sirenC = sirenRockC + 6;
+        const sirenR = Math.max(0, sirenRockR - SIREN.length + 10);
+        stamp(write, SIREN, sirenC, sirenR, (ch, r) => {
+            if (r < 5) {
+                return "rgba(255, 228, 200, 0.95)";
             }
-            if (ch === "~") {
-                return "rgba(180, 80, 90, 0.7)";
+            if (r < 12) {
+                return "rgba(240, 200, 175, 0.92)";
             }
-            return "rgba(230, 200, 170, 0.85)";
+            if (r < 18) {
+                return "rgba(210, 120, 130, 0.88)";
+            }
+            return "rgba(190, 160, 145, 0.9)";
         });
 
-        // Music notes drifting from the sirens toward the ship
-        const noteChars = ["♪", "♫", "♩", "♬", "*", "~"];
-        for (let n = 0; n < 12; n++) {
-            const phase = time * (0.7 + (n % 4) * 0.15) + n * 1.7;
-            const drift = ((phase * 4) % 28);
-            const bob = Math.sin(phase * 2.2) * 2;
-            const nc = Math.round(sirensC + 10 + drift);
-            const nr = Math.round(sirensR - 1 + bob - drift * 0.15);
-            if (nc < cols * 0.55) {
-                write(nc, nr, noteChars[n % noteChars.length], `rgba(255, 220, 140, ${0.45 + (n % 3) * 0.15})`);
+        // Music notes from her mouth toward the ship
+        const mouthC = sirenC + SIREN_MOUTH.c;
+        const mouthR = sirenR + SIREN_MOUTH.r;
+        const noteChars = ["♪", "♫", "♩", "♬", "♪", "♫"];
+        for (let n = 0; n < 16; n++) {
+            const phase = time * (0.75 + (n % 4) * 0.12) + n * 1.55;
+            const drift = (phase * 4.2) % 34;
+            const bob = Math.sin(phase * 2.4) * 2.2;
+            const nc = Math.round(mouthC + 2 + drift);
+            const nr = Math.round(mouthR - 1 + bob - drift * 0.08);
+            if (nc < cols * 0.62) {
+                write(nc, nr, noteChars[n % noteChars.length], `rgba(255, 220, 140, ${0.55 + (n % 3) * 0.12})`);
             }
         }
 
-        // Right cliff + distant Charybdis
+        // Mid-left cliff + cyclops only (Scylla moved to the right)
+        const leftRockR = Math.floor(rows * 0.28);
+        stamp(write, ROCK_LEFT, 0, leftRockR, (ch) => rockColor(ch));
+        for (let s = 0; s < 8; s++) {
+            write(1 + (s % 4), leftRockR + 3 + (s % 5), FOAM[s % FOAM.length], "rgba(220, 240, 255, 0.55)");
+        }
+        stamp(write, CYCLOPS, 2, Math.max(0, leftRockR - 10), mythColor);
+
+        // Right cliff
         const rightRockC = cols - ROCK_RIGHT[0].length - 2;
-        const rightRockR = Math.round(sample(rightRockC + 4)) - ROCK_RIGHT.length + 2;
+        const rightRockR = Math.floor(rows * 0.3);
         stamp(write, ROCK_RIGHT, rightRockC, rightRockR, (ch) => rockColor(ch));
         write(rightRockC - 2, rightRockR - 1, "v", "rgba(40, 40, 45, 0.7)");
         write(rightRockC + 3, rightRockR - 2, "v", "rgba(40, 40, 45, 0.55)");
 
-        const charyC = Math.floor(cols * 0.86);
-        const charyR = Math.round(sample(charyC)) - 1;
-        stamp(write, CHARYBDIS, charyC, charyR, (ch) => {
+        // Whirlpool — right side, below the wave surface
+        const whirlC = Math.max(cols - 26, Math.floor(cols * 0.72));
+        const surfaceAtWhirl = sample(whirlC + 8);
+        const whirlR = Math.min(
+            rows - WHIRLPOOL_A.length - 2,
+            Math.round(surfaceAtWhirl) + 4
+        );
+        const whirlArt = Math.floor(time * 4) % 2 === 0 ? WHIRLPOOL_A : WHIRLPOOL_B;
+        stamp(write, whirlArt, whirlC, whirlR, (ch) => {
             if (ch === "@") {
-                return "rgba(40, 90, 120, 0.85)";
+                return "rgba(15, 55, 85, 0.98)";
             }
-            return "rgba(120, 190, 210, 0.75)";
+            if (ch === "~" || ch === "-" || ch === "." || ch === "'" || ch === "(" || ch === ")") {
+                return "rgba(190, 240, 255, 0.98)";
+            }
+            return "rgba(100, 190, 220, 0.95)";
+        });
+        for (let a = 0; a < 18; a++) {
+            const ang = (a / 18) * Math.PI * 2 + time * 2.8;
+            const rr = 4 + (a % 3);
+            const fc = Math.round(whirlC + 10 + Math.cos(ang) * rr);
+            const fr = Math.round(whirlR + 3 + Math.sin(ang) * (rr * 0.55));
+            write(fc, fr, a % 2 ? "*" : "~", "rgba(230, 250, 255, 0.9)");
+        }
+
+        // Scylla / hydra — right side, above/beside the whirlpool, gently swaying
+        const scyllaSway = Math.round(Math.sin(time * 1.4) * 2);
+        const scyllaBob = Math.round(Math.sin(time * 1.9) * 1);
+        const scyllaC = Math.max(
+            0,
+            Math.min(cols - SCYLLA_W - 1, whirlC - Math.floor(SCYLLA_W * 0.35) + scyllaSway)
+        );
+        const scyllaR = Math.max(
+            0,
+            Math.min(rows - SCYLLA_H - 1, whirlR - SCYLLA_H + 6 + scyllaBob)
+        );
+        stamp(write, SCYLLA, scyllaC, scyllaR, (ch, r) => {
+            const pulse = 0.85 + 0.1 * Math.sin(time * 3 + r * 0.2);
+            if (r < 6) {
+                return `rgba(200, 90, 110, ${pulse})`;
+            }
+            if (r < 14) {
+                return `rgba(160, 70, 95, ${pulse})`;
+            }
+            return `rgba(90, 55, 75, ${Math.min(pulse, 0.95)})`;
         });
 
         // Ship

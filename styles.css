@@ -91,32 +91,107 @@ body {
 
 .wave-controls {
     display: grid;
-    gap: 0.28rem;
-    max-height: 9.5rem;
+    gap: 0.35rem;
+    max-height: 8.5rem;
     overflow-y: auto;
-    padding-right: 0.15rem;
+    padding-right: 0.35rem;
     scrollbar-width: thin;
+    scrollbar-color: rgba(142, 184, 196, 0.45) rgba(255, 255, 255, 0.04);
+}
+
+.wave-controls::-webkit-scrollbar {
+    width: 5px;
+}
+
+.wave-controls::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+}
+
+.wave-controls::-webkit-scrollbar-thumb {
+    background: rgba(142, 184, 196, 0.45);
+    border-radius: 999px;
+}
+
+.wave-controls::-webkit-scrollbar-thumb:hover {
+    background: rgba(160, 200, 210, 0.65);
 }
 
 .wave-controls label {
     display: grid;
-    grid-template-columns: 3.2rem 1fr 2.2rem;
+    grid-template-columns: 2.4rem 1fr 2.1rem;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     font-size: 0.62rem;
     color: var(--muted);
 }
 
-.wave-controls input[type="range"] {
-    width: 100%;
-    accent-color: var(--accent);
-    cursor: pointer;
+.wave-key {
+    color: rgba(180, 205, 220, 0.75);
 }
 
 .wave-val {
     text-align: right;
     color: rgba(210, 225, 240, 0.75);
     font-variant-numeric: tabular-nums;
+}
+
+/* Cross-browser custom range — identical look in Chromium / Firefox / Safari */
+.wave-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 14px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.wave-slider:focus {
+    outline: none;
+}
+
+.wave-slider:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(110, 198, 255, 0.35);
+}
+
+.wave-slider:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 3px rgba(110, 198, 255, 0.35);
+}
+
+.wave-slider::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(110, 198, 255, 0.25), rgba(142, 184, 196, 0.55));
+    border: none;
+}
+
+.wave-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    margin-top: -4.5px;
+    border-radius: 50%;
+    border: 1px solid rgba(230, 245, 255, 0.7);
+    background: radial-gradient(circle at 35% 30%, #d8f0ff, #6ec6ff 55%, #3a7ca5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.wave-slider::-moz-range-track {
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(110, 198, 255, 0.25), rgba(142, 184, 196, 0.55));
+    border: none;
+}
+
+.wave-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(230, 245, 255, 0.7);
+    background: radial-gradient(circle at 35% 30%, #d8f0ff, #6ec6ff 55%, #3a7ca5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
 .desktop {

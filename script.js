@@ -359,7 +359,6 @@ function openAbout() {
     return node;
 }
 
-let terminalReady = false;
 const history = [];
 let historyIndex = -1;
 
@@ -457,18 +456,7 @@ function runCommand(raw) {
             appendTerminal("guest");
             break;
         case "neofetch":
-            appendTerminal(
-                [
-                    "asif@desktop",
-                    "------------",
-                    "OS:     Browser Linux (fake)",
-                    "Shell:  asifsh 0.1",
-                    "WM:     odysseywm",
-                    "Theme:  wine-dark sea",
-                    `Host:   github.com/${GITHUB_USER}`,
-                    "Sea:    Scylla · Sirens · Charybdis"
-                ].join("\n")
-            );
+            printNeofetch();
             break;
         case "date":
             appendTerminal(new Date().toString());
@@ -489,17 +477,50 @@ function runCommand(raw) {
     }
 }
 
-function initTerminal(win) {
-    if (terminalReady) {
-        return;
+function printNeofetch() {
+    // Compact Odyssean galley (wallpaper ship, small factor)
+    const boat = [
+        "                        .",
+        "           ______      /|",
+        "        __/::::::\\___ //|",
+        "       |:::####:::\\\\///|",
+        "       |___||||___\\\\// ",
+        "  .--~~ \\__||||__/ ~~-.",
+        " /______\\__||||__/____\\",
+        " \\______/@@@>\\________/",
+        "   /|/|/|/|/|/|/|/|/",
+        "  V V V V V V V V V"
+    ];
+    const info = [
+        "guest@asif",
+        "----------",
+        "OS:     Browser Linux (fake)",
+        "Shell:  asifsh 0.1",
+        "WM:     odysseywm",
+        "Theme:  wine-dark sea",
+        `Host:   github.com/${GITHUB_USER}`,
+        "Ship:   Odyssean galley",
+        "Sea:    Sirens · Scylla · whirlpool",
+        "Tune:   η(x,t) wave panel"
+    ];
+    const width = Math.max(...boat.map((l) => l.length));
+    const rows = Math.max(boat.length, info.length);
+    const lines = [];
+    for (let i = 0; i < rows; i++) {
+        const left = (boat[i] || "").padEnd(width);
+        const right = info[i] || "";
+        lines.push(`${left}   ${right}`);
     }
-    terminalReady = true;
+    appendTerminal(lines.join("\n"), "term-line--ok");
+}
 
-    appendTerminal("Welcome aboard asif@desktop. Type 'help' to begin.");
-    appendTerminal("Wallpaper: Odyssey galley — tune η(x,t) in the wave panel.");
-
+function bindTerminalInput(win) {
     const form = win.querySelector("#terminalForm");
     const input = win.querySelector("#terminalInput");
+    if (!form || form.dataset.bound === "1") {
+        return;
+    }
+    form.dataset.bound = "1";
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -542,7 +563,9 @@ function openTerminal() {
     wireWindowChrome(node, id);
     windowsRoot.appendChild(node);
     openWindows.set(id, node);
-    initTerminal(node);
+    bindTerminalInput(node);
+    printNeofetch();
+    appendTerminal("Type 'help' for commands.");
     focusWindow(node);
     return node;
 }
@@ -580,3 +603,4 @@ bindLaunchers();
 updateClock();
 setInterval(updateClock, 15_000);
 loadPublishedProjects();
+openTerminal();
