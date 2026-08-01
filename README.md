@@ -1,25 +1,23 @@
 # asbou45115.github.io
 
-Personal entry-point website for published GitHub Pages endpoints. Check it out [here](https://asbou45115.github.io/)
+Linux-style desktop hub with a live ASCII ocean wallpaper (pirate ship on moving water). Desktop icons and a small terminal open project windows that link out to GitHub Pages apps.
 
-## Run locally (Python, port 8000)
+Live: [https://asbou45115.github.io/](https://asbou45115.github.io/)
 
-From the project directory:
+## Run locally
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open:
+Open `http://localhost:8000` (ES modules require HTTP, not `file://`).
 
-`http://localhost:8000`
+## What’s on the desktop
 
-## What this site does
-
-- Loads public repositories for `asbou45115` from the GitHub API
-- Filters repos with GitHub Pages enabled (`has_pages = true`)
-- Displays endpoint links in a minimal dark UI
+- **Wallpaper** — interactive ASCII ocean + pirate ship (`ocean.js`); mouse stirs the water and the ship rides the waves
+- **Icons / dock** — Black Hole, Particles, Plinko, ASCII, Terminal, GitHub
+- **Terminal** — `help`, `ls`, `open <project>`, `github`, `neofetch`, …
 
 ## Deploy
 
-Push changes to the default branch for this repository and GitHub Pages will serve the updated static files.
+Push to the default branch; GitHub Pages serves the static files.

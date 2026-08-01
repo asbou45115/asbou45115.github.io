@@ -3,38 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Asif Bhuiyan - portfolio entry point for all GitHub Pages endpoints.">
-    <title>Asif | GitHub Pages Hub</title>
+    <meta name="description" content="Asif Bhuiyan — Linux-style desktop hub with a live ASCII ocean wallpaper.">
+    <meta name="theme-color" content="#0a1628">
+    <title>asif@desktop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main class="page">
-        <section class="hero">
-            <p class="eyebrow">asbou45115.github.io</p>
-            <h1>Asif Bhuiyan</h1>
-            <p class="intro">
-                Computer Science student building small products, simulations, and experiments.
-                This page is the central index for all published GitHub Pages endpoints.
-            </p>
-            <div class="hero-links">
-                <a href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            </div>
-        </section>
+    <canvas id="wallpaper" aria-hidden="true"></canvas>
 
-        <section class="endpoints">
-            <div class="section-header">
-                <h2>Published Endpoints</h2>
-                <button id="refreshButton" type="button">Refresh</button>
-            </div>
-            <p class="section-note">
-                Auto-loaded from public repositories with GitHub Pages enabled.
-            </p>
-            <div id="statusMessage" role="status" aria-live="polite"></div>
-            <ul id="endpointsList" class="endpoint-list"></ul>
-        </section>
-    </main>
+    <div class="desktop" id="desktop">
+        <button class="icon" type="button" data-app="black_hole" title="Black Hole">
+            <span class="icon-art icon-art--blackhole" aria-hidden="true"></span>
+            <span class="icon-label">Black Hole</span>
+        </button>
+        <button class="icon" type="button" data-app="particles" title="Particles">
+            <span class="icon-art icon-art--particles" aria-hidden="true"></span>
+            <span class="icon-label">Particles</span>
+        </button>
+        <button class="icon" type="button" data-app="plinko" title="Plinko">
+            <span class="icon-art icon-art--plinko" aria-hidden="true"></span>
+            <span class="icon-label">Plinko</span>
+        </button>
+        <button class="icon" type="button" data-app="ascii" title="ASCII Renderer">
+            <span class="icon-art icon-art--ascii" aria-hidden="true"></span>
+            <span class="icon-label">ASCII</span>
+        </button>
+        <button class="icon" type="button" data-app="terminal" title="Terminal">
+            <span class="icon-art icon-art--terminal" aria-hidden="true"></span>
+            <span class="icon-label">Terminal</span>
+        </button>
+        <a class="icon" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer" title="GitHub">
+            <span class="icon-art icon-art--github" aria-hidden="true"></span>
+            <span class="icon-label">GitHub</span>
+        </a>
+    </div>
 
-    <script src="script.js"></script>
+    <div id="windows" class="windows"></div>
+
+    <template id="tpl-project">
+        <div class="window" data-kind="project">
+            <header class="window-titlebar">
+                <span class="window-title"></span>
+                <button class="window-close" type="button" aria-label="Close">×</button>
+            </header>
+            <div class="window-body">
+                <p class="project-kicker"></p>
+                <p class="project-desc"></p>
+                <div class="project-actions">
+                    <a class="btn btn-primary project-live" target="_blank" rel="noopener noreferrer">Open live</a>
+                    <a class="btn btn-ghost project-repo" target="_blank" rel="noopener noreferrer">Repository</a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-terminal">
+        <div class="window window--terminal" data-kind="terminal" id="win-terminal">
+            <header class="window-titlebar">
+                <span class="window-title">Terminal</span>
+                <button class="window-close" type="button" aria-label="Close">×</button>
+            </header>
+            <div class="window-body terminal-body">
+                <div class="terminal-output" id="terminalOutput" aria-live="polite"></div>
+                <form class="terminal-form" id="terminalForm" autocomplete="off">
+                    <label class="terminal-prompt" for="terminalInput">guest@asif:~$</label>
+                    <input id="terminalInput" class="terminal-input" type="text" spellcheck="false" aria-label="Terminal input">
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-about">
+        <div class="window" data-kind="about">
+            <header class="window-titlebar">
+                <span class="window-title">About</span>
+                <button class="window-close" type="button" aria-label="Close">×</button>
+            </header>
+            <div class="window-body">
+                <p class="project-kicker">asif@desktop</p>
+                <p class="project-desc">
+                    Computer Science student. Simulations, shaders, and small experiments —
+                    launched from this desktop shell.
+                </p>
+                <div class="project-actions">
+                    <a class="btn btn-primary" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="btn btn-ghost" href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <footer class="dock" id="dock">
+        <div class="dock-left">
+            <button class="dock-btn" type="button" data-app="terminal" title="Terminal" aria-label="Open Terminal">
+                <span class="dock-glyph dock-glyph--term" aria-hidden="true"></span>
+            </button>
+            <button class="dock-btn" type="button" data-app="black_hole" title="Black Hole" aria-label="Open Black Hole">
+                <span class="dock-glyph dock-glyph--bh" aria-hidden="true"></span>
+            </button>
+            <a class="dock-btn" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub profile">
+                <span class="dock-glyph dock-glyph--gh" aria-hidden="true"></span>
+            </a>
+            <button class="dock-btn" type="button" data-app="about" title="About" aria-label="Open About">
+                <span class="dock-glyph dock-glyph--about" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div class="dock-tasks" id="dockTasks" aria-label="Open windows"></div>
+        <div class="dock-right">
+            <time class="dock-clock" id="dockClock"></time>
+        </div>
+    </footer>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
