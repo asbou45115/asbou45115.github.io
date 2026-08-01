@@ -1,6 +1,6 @@
 # asbou45115.github.io
 
-Linux-style desktop hub with a live ASCII ocean wallpaper (pirate ship on moving water). Desktop icons and a small terminal open project windows that link out to GitHub Pages apps.
+Linux-style desktop hub with an Odyssey-themed ASCII wallpaper (Greek galley on a live multi-sine sea). A Projects folder and terminal open windows that link out to GitHub Pages apps.
 
 Live: [https://asbou45115.github.io/](https://asbou45115.github.io/)
 
@@ -14,9 +14,10 @@ Open `http://localhost:8000` (ES modules require HTTP, not `file://`).
 
 ## What’s on the desktop
 
-- **Wallpaper** — interactive ASCII ocean + pirate ship (`ocean.js`); mouse stirs the water and the ship rides the waves
-- **Icons / dock** — Black Hole, Particles, Plinko, ASCII, Terminal, GitHub
-- **Terminal** — `help`, `ls`, `open <project>`, `github`, `neofetch`, …
+- **Wallpaper** — ASCII Odyssean galley; mouse stirs `η(x,t)` (`ocean.js`)
+- **Wave HUD** — live equation parameters, bottom-right
+- **Projects/** — folder window for Black Hole, Particles, Plinko, ASCII
+- **Terminal / GitHub** — shell + profile link
 
 ## Deploy
 

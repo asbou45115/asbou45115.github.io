@@ -47,6 +47,28 @@ body {
     display: block;
 }
 
+.wave-equation {
+    position: fixed;
+    z-index: 3;
+    right: 1rem;
+    bottom: calc(var(--dock-h) + 1.1rem);
+    margin: 0;
+    padding: 0.65rem 0.8rem;
+    max-width: min(360px, calc(100vw - 2rem));
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: rgba(210, 225, 240, 0.78);
+    background: rgba(6, 12, 20, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    pointer-events: none;
+    white-space: pre;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
 .desktop {
     position: fixed;
     z-index: 2;
@@ -99,41 +121,31 @@ body {
     overflow: hidden;
 }
 
-.icon-art--blackhole {
-    background: radial-gradient(circle at 50% 45%, #1a1208 0%, #000 42%, #e28a3d 48%, #3a2210 70%, #0a0c12 100%);
+.icon-art--folder {
+    background: linear-gradient(160deg, #e0b35a 0%, #c4892e 55%, #9a6a22 100%);
+    border-radius: 10px 10px 8px 8px;
 }
 
-.icon-art--particles {
-    background:
-        radial-gradient(circle at 30% 35%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 65% 55%, #9fd4ff 0 2px, transparent 3px),
-        radial-gradient(circle at 45% 70%, #fff 0 1.5px, transparent 2.5px),
-        linear-gradient(160deg, #1c3a55, #0d1a28);
-}
-
-.icon-art--plinko {
-    background:
-        radial-gradient(circle at 50% 22%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 35% 45%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 65% 45%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 50% 70%, #6ec6ff 0 3px, transparent 4px),
-        linear-gradient(180deg, #243448, #152030);
-}
-
-.icon-art--ascii {
-    background: linear-gradient(180deg, #dce3ec, #aeb8c6);
-}
-
-.icon-art--ascii::after {
-    content: "Aa";
+.icon-art--folder::before {
+    content: "";
     position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    color: #1a2130;
-    font-family: var(--mono);
-    font-weight: 500;
-    font-size: 1rem;
+    top: 8px;
+    left: 7px;
+    width: 14px;
+    height: 6px;
+    background: #f0d089;
+    border-radius: 3px 3px 0 0;
+}
+
+.icon-art--folder::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 8px;
+    height: 22px;
+    background: #f2c66a;
+    border-radius: 3px;
 }
 
 .icon-art--terminal {
@@ -212,6 +224,60 @@ body {
     min-height: 300px;
     height: min(380px, 55vh);
     background: rgba(10, 14, 20, 0.9);
+}
+
+.window--folder {
+    width: min(420px, calc(100vw - 2rem));
+    min-height: 240px;
+}
+
+.folder-hint {
+    margin: 0 0 0.75rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.folder-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+}
+
+.folder-item {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+}
+
+.folder-item:hover,
+.folder-item:focus-visible {
+    background: var(--accent-dim);
+    border-color: rgba(110, 198, 255, 0.35);
+    outline: none;
+}
+
+.folder-item-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.folder-item-meta {
+    color: var(--muted);
+    font-size: 0.75rem;
+    white-space: nowrap;
 }
 
 @keyframes winIn {
@@ -480,9 +546,21 @@ body {
     font-weight: 500;
 }
 
-.dock-glyph--bh {
-    background: radial-gradient(circle at 50% 45%, #000 35%, #e28a3d 48%, #1a1208 100%);
-    border-radius: 50%;
+.dock-glyph--folder {
+    background: linear-gradient(160deg, #e0b35a, #c4892e);
+    border-radius: 3px;
+    position: relative;
+}
+
+.dock-glyph--folder::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 3px;
+    background: #f0d089;
+    border-radius: 1px;
 }
 
 .dock-glyph--gh {
@@ -547,6 +625,13 @@ body {
 }
 
 @media (max-width: 700px) {
+    .wave-equation {
+        right: 0.5rem;
+        bottom: calc(var(--dock-h) + 2.6rem);
+        font-size: 0.58rem;
+        padding: 0.45rem 0.55rem;
+    }
+
     .desktop {
         top: 0.65rem;
         left: 0.4rem;

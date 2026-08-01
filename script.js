@@ -44,6 +44,7 @@ const apps = {
 const windowsRoot = document.getElementById("windows");
 const dockTasks = document.getElementById("dockTasks");
 const dockClock = document.getElementById("dockClock");
+const tplFolder = document.getElementById("tpl-folder");
 const tplProject = document.getElementById("tpl-project");
 const tplTerminal = document.getElementById("tpl-terminal");
 const tplAbout = document.getElementById("tpl-about");
@@ -188,6 +189,39 @@ function openProject(appKey) {
     return node;
 }
 
+function openProjectsFolder() {
+    const id = "projects";
+    if (openWindows.has(id)) {
+        focusWindow(openWindows.get(id));
+        return openWindows.get(id);
+    }
+
+    const node = tplFolder.content.firstElementChild.cloneNode(true);
+    node.dataset.title = "Projects";
+    const list = node.querySelector(".folder-list");
+
+    Object.values(apps).forEach((app) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "folder-item";
+        btn.innerHTML = `
+            <span class="folder-item-name">${app.title}</span>
+            <span class="folder-item-meta">${app.kicker}</span>
+        `;
+        btn.addEventListener("click", () => openProject(app.id));
+        li.appendChild(btn);
+        list.appendChild(li);
+    });
+
+    placeWindow(node, openWindows.size);
+    wireWindowChrome(node, id);
+    windowsRoot.appendChild(node);
+    openWindows.set(id, node);
+    focusWindow(node);
+    return node;
+}
+
 function openAbout() {
     const id = "about";
     if (openWindows.has(id)) {
@@ -245,7 +279,7 @@ function runCommand(raw) {
                 [
                     "commands:",
                     "  help                 show this list",
-                    "  ls | projects        list desktop projects",
+                    "  ls | projects        list / open Projects folder",
                     "  open <name>          open a project window",
                     "  github               open GitHub profile",
                     "  whoami | neofetch    identity",
@@ -256,12 +290,15 @@ function runCommand(raw) {
             );
             break;
         case "ls":
-        case "projects":
             appendTerminal(
                 Object.values(apps)
                     .map((a) => `${a.id.padEnd(14)} ${a.title}`)
                     .join("\n")
             );
+            break;
+        case "projects":
+            openProjectsFolder();
+            appendTerminal("opened Projects/", "term-line--ok");
             break;
         case "open": {
             if (!arg) {
@@ -291,10 +328,10 @@ function runCommand(raw) {
                     "------------",
                     "OS:     Browser Linux (fake)",
                     "Shell:  asifsh 0.1",
-                    "WM:     oceanwm",
-                    "Theme:  deep water",
+                    "WM:     odysseywm",
+                    "Theme:  wine-dark sea",
                     "Host:   github.com/asbou45115",
-                    "Apps:   black_hole particles plinko ascii"
+                    "Ship:   πολύτροπος bound for Ίθάκη"
                 ].join("\n")
             );
             break;
@@ -323,8 +360,8 @@ function initTerminal(win) {
     }
     terminalReady = true;
 
-    appendTerminal("Welcome to asif@desktop. Type 'help' to begin.");
-    appendTerminal("Wallpaper: ASCII ocean — move the mouse to stir the sea.");
+    appendTerminal("Welcome aboard asif@desktop. Type 'help' to begin.");
+    appendTerminal("Wallpaper: Odyssey galley — mouse stirs η(x,t).");
 
     const form = win.querySelector("#terminalForm");
     const input = win.querySelector("#terminalInput");
@@ -382,6 +419,9 @@ function launch(appId) {
     if (appId === "about") {
         return openAbout();
     }
+    if (appId === "projects") {
+        return openProjectsFolder();
+    }
     if (apps[appId]) {
         return openProject(appId);
     }
@@ -394,17 +434,13 @@ function bindLaunchers() {
             return;
         }
         el.addEventListener("click", () => launch(el.dataset.app));
-        el.addEventListener("dblclick", (e) => {
-            e.preventDefault();
-            launch(el.dataset.app);
-        });
     });
 }
 
-createOceanWallpaper(document.getElementById("wallpaper"));
+createOceanWallpaper(
+    document.getElementById("wallpaper"),
+    document.getElementById("waveEquation")
+);
 bindLaunchers();
 updateClock();
 setInterval(updateClock, 15_000);
-
-// Boot with terminal slightly open so the shell is discoverable
-setTimeout(() => openTerminal(), 350);
