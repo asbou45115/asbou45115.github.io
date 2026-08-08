@@ -1,142 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Asif Bhuiyan — Odyssey desktop hub with a live ASCII Greek galley.">
-    <meta name="theme-color" content="#0a1628">
-    <title>asif@desktop</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Asif Bhuiyan — portfolio.">
+<title>ASIF BHUIYAN</title>
+<style>
+  :root {
+    --bg: #000;
+    --ink: #e8e8e8;
+    --muted: #5a7a5a;
+    --green: #2dff6a;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; background: var(--bg); overflow: hidden;
+    font-family: "Share Tech Mono", ui-monospace, Consolas, monospace; color: var(--ink);
+  }
+  #scene {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    display: block; cursor: crosshair; touch-action: none; background: #000;
+  }
+  .hud { position: fixed; z-index: 4; pointer-events: none; }
+  .hud a { pointer-events: auto; color: var(--green); text-decoration: none; }
+  .hud a:hover { color: var(--ink); }
+  .brand-hud { top: clamp(1rem, 3.5vw, 2.2rem); left: clamp(1rem, 3.5vw, 2.4rem); }
+  .brand-hud h1 {
+    margin: 0; font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 700;
+    letter-spacing: .06em; line-height: .95; color: var(--ink);
+  }
+  .brand-hud .links { margin-top: .55rem; font-size: .82rem; display: flex; gap: 1.1rem; }
+  .brand-hud .links a::before { content: "> "; color: var(--green); }
+  .loader {
+    position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; gap: .6rem;
+    background: #000; transition: opacity .4s ease, visibility .4s ease;
+  }
+  .loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .loader p { margin: 0; color: var(--green); letter-spacing: .16em; font-size: .9rem; text-align: center; }
+  .loader .sub { color: var(--muted); font-size: .75rem; }
+  .bar { width: min(16rem, 70vw); height: 2px; background: rgba(45,255,106,.15); }
+  .bar > span { display: block; height: 100%; width: 0%; background: var(--green); }
+</style>
 </head>
 <body>
-    <canvas id="wallpaper" aria-hidden="true"></canvas>
+<canvas id="scene"></canvas>
 
-    <aside class="wave-panel" id="wavePanel" aria-label="Wave equation controls">
-        <pre id="waveEquation" class="wave-equation-text"></pre>
-        <div class="wave-live">
-            <span>χ <b data-out="amp">—</b></span>
-            <span>φ <b data-out="phi">—</b></span>
-            <span>t <b data-out="t">—</b></span>
-        </div>
-        <div class="wave-controls">
-            <label><span class="wave-key">amp</span><input class="wave-slider" type="range" data-wave="ampScale" min="0.15" max="1.2" step="0.01" value="0.55"><span class="wave-val">0.55</span></label>
-            <label><span class="wave-key">speed</span><input class="wave-slider" type="range" data-wave="timeScale" min="0.2" max="2.5" step="0.05" value="1"><span class="wave-val">1.00</span></label>
-            <label><span class="wave-key">φ</span><input class="wave-slider" type="range" data-wave="mousePhi" min="0" max="6" step="0.1" value="3.2"><span class="wave-val">3.20</span></label>
-            <label><span class="wave-key">χ</span><input class="wave-slider" type="range" data-wave="mouseChop" min="0" max="2.5" step="0.05" value="1.4"><span class="wave-val">1.40</span></label>
-            <label><span class="wave-key">A₁</span><input class="wave-slider" type="range" data-wave="A0" min="0" max="1.8" step="0.05" value="1"><span class="wave-val">1.00</span></label>
-            <label><span class="wave-key">A₂</span><input class="wave-slider" type="range" data-wave="A1" min="0" max="1.8" step="0.05" value="0.55"><span class="wave-val">0.55</span></label>
-            <label><span class="wave-key">ω₁</span><input class="wave-slider" type="range" data-wave="w0" min="0.2" max="5" step="0.05" value="2.4"><span class="wave-val">2.40</span></label>
-            <label><span class="wave-key">ω₂</span><input class="wave-slider" type="range" data-wave="w1" min="0.2" max="5" step="0.05" value="3.1"><span class="wave-val">3.10</span></label>
-        </div>
-    </aside>
+<div class="loader" id="loader" role="status">
+  <p id="loaderMsg">LOADING_</p>
+  <div class="bar"><span id="loadBar"></span></div>
+  <p class="sub" id="loaderSub"></p>
+</div>
 
-    <div class="desktop" id="desktop">
-        <button class="icon" type="button" data-app="projects" title="Projects">
-            <span class="icon-art icon-art--folder" aria-hidden="true"></span>
-            <span class="icon-label">Projects</span>
-        </button>
-        <button class="icon" type="button" data-app="terminal" title="Terminal">
-            <span class="icon-art icon-art--terminal" aria-hidden="true"></span>
-            <span class="icon-label">Terminal</span>
-        </button>
-        <a class="icon" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer" title="GitHub">
-            <span class="icon-art icon-art--github" aria-hidden="true"></span>
-            <span class="icon-label">GitHub</span>
-        </a>
-    </div>
+<header class="hud brand-hud">
+  <h1>ASIF BHUIYAN</h1>
+  <nav class="links">
+    <a href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">github</a>
+    <a href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">linkedin</a>
+  </nav>
+</header>
 
-    <div id="windows" class="windows"></div>
+<script type="module">
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d", { alpha: false });
+const loader = document.getElementById("loader");
+const loaderMsg = document.getElementById("loaderMsg");
+const loaderSub = document.getElementById("loaderSub");
+const loadBar = document.getElementById("loadBar");
 
-    <template id="tpl-folder">
-        <div class="window window--folder" data-kind="folder">
-            <header class="window-titlebar">
-                <span class="window-title">Projects</span>
-                <button class="window-close" type="button" aria-label="Close">×</button>
-            </header>
-            <div class="window-body folder-body">
-                <p class="folder-hint">Published GitHub Pages work</p>
-                <ul class="folder-list" id="folderList"></ul>
-            </div>
-        </div>
-    </template>
+/** @type {ImageBitmap[]} */
+let frames = [];
+let fps = 30;
+/** Continuous scrub position in [0, lastIndex] — 0 = start of clip, last = end (held) */
+let scrub = 0;
+let lastTs = 0;
 
-    <template id="tpl-project">
-        <div class="window" data-kind="project">
-            <header class="window-titlebar">
-                <span class="window-title"></span>
-                <button class="window-close" type="button" aria-label="Close">×</button>
-            </header>
-            <div class="window-body">
-                <p class="project-kicker"></p>
-                <p class="project-desc"></p>
-                <div class="project-actions">
-                    <a class="btn btn-primary project-live" target="_blank" rel="noopener noreferrer">Open live</a>
-                    <a class="btn btn-ghost project-repo" target="_blank" rel="noopener noreferrer">Repository</a>
-                </div>
-            </div>
-        </div>
-    </template>
+// Pointer state
+let cursorDist = 1;       // 0 = center, 1 = far edge
+let pointerX = 0;
+let pointerY = 0;
+let lastPointerTs = 0;
+let velocity = 0;         // px/s, smoothed
+let targetProgress = 0;   // 0 = last frame (idle), 1 = first frame (full reverse)
 
-    <template id="tpl-terminal">
-        <div class="window window--terminal" data-kind="terminal" id="win-terminal">
-            <header class="window-titlebar">
-                <span class="window-title">Terminal</span>
-                <button class="window-close" type="button" aria-label="Close">×</button>
-            </header>
-            <div class="window-body terminal-body">
-                <div class="terminal-output" id="terminalOutput" aria-live="polite"></div>
-                <form class="terminal-form" id="terminalForm" autocomplete="off">
-                    <label class="terminal-prompt" for="terminalInput">guest@asif:~$</label>
-                    <input id="terminalInput" class="terminal-input" type="text" spellcheck="false" aria-label="Terminal input">
-                </form>
-            </div>
-        </div>
-    </template>
+/**
+ * Concentric rings from outside → center.
+ * Each ring unlocks more of the reverse animation (progress toward frame 0).
+ * Outer rest zone stays on the last frame; innermost ring completes to frame 0.
+ */
+const RINGS = [
+  { maxDist: 0.92, progress: 0.00 }, // far edge — rest / last frame
+  { maxDist: 0.72, progress: 0.20 },
+  { maxDist: 0.52, progress: 0.40 },
+  { maxDist: 0.34, progress: 0.65 },
+  { maxDist: 0.18, progress: 0.85 },
+  { maxDist: 0.00, progress: 1.00 }, // dead center — full reverse
+];
 
-    <template id="tpl-about">
-        <div class="window" data-kind="about">
-            <header class="window-titlebar">
-                <span class="window-title">About</span>
-                <button class="window-close" type="button" aria-label="Close">×</button>
-            </header>
-            <div class="window-body">
-                <p class="project-kicker">asif@desktop</p>
-                <p class="project-desc">
-                    Computer Science student. Simulations, shaders, and small experiments —
-                    sailing an ASCII Odyssey across this desktop shell.
-                </p>
-                <div class="project-actions">
-                    <a class="btn btn-primary" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">GitHub</a>
-                    <a class="btn btn-ghost" href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                </div>
-            </div>
-        </div>
-    </template>
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(1, Math.floor(innerWidth * dpr));
+  const h = Math.max(1, Math.floor(innerHeight * dpr));
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+    if (frames.length) paint(frames[Math.round(scrub)]);
+  }
+}
+window.addEventListener("resize", resize);
+resize();
 
-    <footer class="dock" id="dock">
-        <div class="dock-left">
-            <button class="dock-btn" type="button" data-app="terminal" title="Terminal" aria-label="Open Terminal">
-                <span class="dock-glyph dock-glyph--term" aria-hidden="true"></span>
-            </button>
-            <button class="dock-btn" type="button" data-app="projects" title="Projects" aria-label="Open Projects">
-                <span class="dock-glyph dock-glyph--folder" aria-hidden="true"></span>
-            </button>
-            <a class="dock-btn" href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub profile">
-                <span class="dock-glyph dock-glyph--gh" aria-hidden="true"></span>
-            </a>
-            <button class="dock-btn" type="button" data-app="about" title="About" aria-label="Open About">
-                <span class="dock-glyph dock-glyph--about" aria-hidden="true"></span>
-            </button>
-        </div>
-        <div class="dock-tasks" id="dockTasks" aria-label="Open windows"></div>
-        <div class="dock-right">
-            <time class="dock-clock" id="dockClock"></time>
-        </div>
-    </footer>
+function paint(bmp) {
+  if (!bmp) return;
+  const cw = canvas.width;
+  const ch = canvas.height;
+  const scale = Math.min(cw / bmp.width, ch / bmp.height);
+  const dw = bmp.width * scale;
+  const dh = bmp.height * scale;
+  const ox = (cw - dw) / 2;
+  const oy = (ch - dh) / 2;
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bmp, ox, oy, dw, dh);
+}
 
-    <script type="module" src="script.js"></script>
+/** Map distance-from-center → reverse progress via ring bands (with smooth blend between rings). */
+function progressFromDistance(dist) {
+  // Walk rings from outside in; interpolate between neighboring band edges
+  let outer = { maxDist: 1.15, progress: 0 };
+  for (const ring of RINGS) {
+    if (dist >= ring.maxDist) {
+      const span = outer.maxDist - ring.maxDist;
+      const t = span > 1e-6 ? (outer.maxDist - dist) / span : 1;
+      return outer.progress + (ring.progress - outer.progress) * Math.min(1, Math.max(0, t));
+    }
+    outer = ring;
+  }
+  return 1;
+}
+
+function setPointer(clientX, clientY, timeStamp) {
+  const nx = (clientX / innerWidth) * 2 - 1;
+  const ny = (clientY / innerHeight) * 2 - 1;
+  cursorDist = Math.min(1.2, Math.hypot(nx, ny));
+
+  const ts = timeStamp || performance.now();
+  if (lastPointerTs > 0) {
+    const dt = Math.max(0.001, (ts - lastPointerTs) / 1000);
+    const dx = clientX - pointerX;
+    const dy = clientY - pointerY;
+    const instant = Math.hypot(dx, dy) / dt;
+    velocity = velocity * 0.72 + instant * 0.28;
+  }
+  pointerX = clientX;
+  pointerY = clientY;
+  lastPointerTs = ts;
+
+  targetProgress = progressFromDistance(cursorDist);
+}
+
+window.addEventListener("pointermove", (e) => setPointer(e.clientX, e.clientY, e.timeStamp));
+window.addEventListener("touchstart", (e) => {
+  const t = e.touches[0];
+  if (t) setPointer(t.clientX, t.clientY, e.timeStamp);
+}, { passive: true });
+window.addEventListener("touchmove", (e) => {
+  const t = e.touches[0];
+  if (t) setPointer(t.clientX, t.clientY, e.timeStamp);
+}, { passive: true });
+
+/** Decay velocity when the pointer stops moving. */
+setInterval(() => {
+  if (performance.now() - lastPointerTs > 80) {
+    velocity *= 0.85;
+  }
+}, 50);
+
+/**
+ * Scrub toward the ring target.
+ * progress 0 → last frame, progress 1 → first frame.
+ * Mouse speed scales how quickly scrub catches the target.
+ */
+function tick(ts) {
+  requestAnimationFrame(tick);
+  if (!frames.length) return;
+
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min(0.05, (ts - lastTs) / 1000);
+  lastTs = ts;
+
+  const last = frames.length - 1;
+  const targetIndex = last * (1 - targetProgress);
+
+  // Base catch-up + velocity boost (px/s → rate multiplier)
+  const speedBoost = Math.min(4.5, velocity / 700);
+  const rate = (5.5 + speedBoost * 10) * dt;
+
+  scrub += (targetIndex - scrub) * Math.min(1, rate);
+  if (Math.abs(targetIndex - scrub) < 0.02) scrub = targetIndex;
+
+  const frameIndex = Math.round(Math.min(last, Math.max(0, scrub)));
+  paint(frames[frameIndex]);
+}
+requestAnimationFrame(tick);
+
+async function loadFrames() {
+  const res = await fetch("assets/ascii/manifest.json");
+  if (!res.ok) {
+    throw new Error("manifest missing — run: cd tools/precompute_ascii && uv sync && uv run python main.py");
+  }
+  const manifest = await res.json();
+  fps = manifest.fps || 30;
+  const list = manifest.frames || [];
+  frames = new Array(list.length);
+  let loaded = 0;
+
+  const concurrency = 8;
+  let cursor = 0;
+  async function worker() {
+    while (cursor < list.length) {
+      const i = cursor++;
+      const url = list[i];
+      const img = await fetch(url).then((r) => {
+        if (!r.ok) throw new Error("failed " + url);
+        return r.blob();
+      });
+      frames[i] = await createImageBitmap(img);
+      loaded += 1;
+      loadBar.style.width = Math.round((loaded / list.length) * 100) + "%";
+      loaderSub.textContent = `${loaded} / ${list.length}`;
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+
+  // Held on the last frame until the cursor enters the outer ring
+  scrub = frames.length - 1;
+  targetProgress = 0;
+  paint(frames[frames.length - 1]);
+  loader.classList.add("is-done");
+}
+
+loadFrames().catch((err) => {
+  console.error(err);
+  loaderMsg.textContent = "ASCII_FRAMES_MISSING";
+  loaderSub.textContent = String(err.message || err);
+});
+</script>
 </body>
 </html>

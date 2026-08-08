@@ -1,8 +1,6 @@
 # asbou45115.github.io
 
-Linux-style desktop hub with an Odyssey-themed ASCII wallpaper (Greek galley on a live multi-sine sea). A Projects folder and terminal open windows that link out to GitHub Pages apps.
-
-Live: [https://asbou45115.github.io/](https://asbou45115.github.io/)
+Ghost in the Shell–inspired portfolio. The shell-assembly clip is **precomputed** to ASCII (green / black / white) with the same algorithm as [`ascii_renderer`](https://github.com/asbou45115/ascii_renderer), then the browser only plays those frames — no live Sobel work.
 
 ## Run locally
 
@@ -10,15 +8,29 @@ Live: [https://asbou45115.github.io/](https://asbou45115.github.io/)
 python -m http.server 8000
 ```
 
-Open `http://localhost:8000` (ES modules require HTTP, not `file://`).
+Open `http://127.0.0.1:8000`.
 
-## What’s on the desktop
+## Interaction
 
-- **Wallpaper** — ASCII Odyssean galley; mouse stirs `η(x,t)` (`ocean.js`)
-- **Wave HUD** — live `η(x,t)` readout + sliders for A, k, ω, amp, speed
-- **Projects/** — folder that auto-fetches public repos with GitHub Pages enabled
-- **Terminal / GitHub** — shell + profile link
+- Plays **once** forward
+- **Click** reverses; click again plays forward
+- Frames come from `assets/ascii/` (must be generated first)
+
+## Precompute ASCII frames (uv)
+
+Requires [uv](https://github.com/astral-sh/uv). Do **not** pip-install into the system Python.
+
+```bash
+cd tools/precompute_ascii
+uv sync
+uv run python main.py
+```
+
+This upscales each frame of `assets/shell.mp4` toward 4K, runs the ASCII renderer, and writes:
+
+- `assets/ascii/frames/frame_XXXX.webp`
+- `assets/ascii/manifest.json`
 
 ## Deploy
 
-Push to the default branch; GitHub Pages serves the static files.
+Commit the precomputed `assets/ascii/` frames with the site (or regenerate in CI), then push to `main` for GitHub Pages.
