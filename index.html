@@ -5,12 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Asif Bhuiyan — portfolio.">
 <title>ASIF BHUIYAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #000;
     --ink: #e8e8e8;
     --muted: #5a7a5a;
     --green: #2dff6a;
+    --green-dim: rgba(45, 255, 106, 0.35);
   }
   * { box-sizing: border-box; }
   html, body {
@@ -21,16 +25,162 @@
     position: fixed; inset: 0; width: 100%; height: 100%;
     display: block; cursor: crosshair; touch-action: none; background: #000;
   }
+
   .hud { position: fixed; z-index: 4; pointer-events: none; }
   .hud a { pointer-events: auto; color: var(--green); text-decoration: none; }
   .hud a:hover { color: var(--ink); }
-  .brand-hud { top: clamp(1rem, 3.5vw, 2.2rem); left: clamp(1rem, 3.5vw, 2.4rem); }
-  .brand-hud h1 {
-    margin: 0; font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 700;
-    letter-spacing: .06em; line-height: .95; color: var(--ink);
+
+  /* Ghost in the Shell–style title block */
+  .brand-hud {
+    top: clamp(1.1rem, 3.5vw, 2.2rem);
+    left: clamp(1.1rem, 3.5vw, 2.4rem);
+    max-width: min(34rem, 72vw);
   }
-  .brand-hud .links { margin-top: .55rem; font-size: .82rem; display: flex; gap: 1.1rem; }
+  .brand-hud .jp {
+    margin: 0 0 0.35rem;
+    font-size: clamp(0.65rem, 1.4vw, 0.78rem);
+    letter-spacing: 0.22em;
+    color: var(--green);
+  }
+  .brand-hud h1 {
+    margin: 0;
+    font-family: "Bebas Neue", Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.8rem, 9vw, 5.6rem);
+    letter-spacing: 0.14em;
+    line-height: 0.88;
+    color: var(--ink);
+    text-shadow:
+      0 0 1px rgba(255,255,255,0.4),
+      2px 0 0 rgba(45,255,106,0.15),
+      -1px 0 0 rgba(180,180,180,0.2);
+  }
+  .brand-hud .rule {
+    display: block;
+    width: min(100%, 18rem);
+    height: 1px;
+    margin: 0.55rem 0 0.45rem;
+    background: linear-gradient(90deg, var(--green), transparent);
+  }
+  .brand-hud .links {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    display: flex;
+    gap: 1.15rem;
+    text-transform: uppercase;
+  }
   .brand-hud .links a::before { content: "> "; color: var(--green); }
+
+  /* Corner brackets + HUD chrome */
+  .corner {
+    position: fixed;
+    z-index: 3;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--green-dim);
+    pointer-events: none;
+  }
+  .corner.tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; }
+  .corner.tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; }
+  .corner.bl { bottom: 12px; left: 12px; border-right: 0; border-top: 0; }
+  .corner.br { bottom: 12px; right: 12px; border-left: 0; border-top: 0; }
+
+  .hud-tr {
+    top: clamp(1rem, 3vw, 1.8rem);
+    right: clamp(1rem, 3vw, 2rem);
+    text-align: right;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .hud-tr .live { color: var(--green); }
+  .hud-tr .live::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    margin-right: 0.45rem;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    vertical-align: middle;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .hud-br {
+    right: clamp(1rem, 3vw, 2rem);
+    bottom: clamp(2.6rem, 5vw, 3.4rem);
+    text-align: right;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .reticle {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.28;
+  }
+  .reticle::before,
+  .reticle::after {
+    content: "";
+    position: absolute;
+    background: var(--green);
+  }
+  .reticle::before { left: 50%; top: 0; bottom: 0; width: 1px; margin-left: -0.5px; }
+  .reticle::after { top: 50%; left: 0; right: 0; height: 1px; margin-top: -0.5px; }
+  .reticle span {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--green);
+  }
+  .reticle span:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  .reticle span:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+  .reticle span:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+  .reticle span:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+  .scanline {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(0, 0, 0, 0.12) 2px 3px
+    );
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  .credit {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(0.85rem, 2.5vw, 1.35rem);
+    transform: translateX(-50%);
+    z-index: 4;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .credit a {
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .credit a:hover { border-bottom-color: var(--green-dim); color: var(--ink); }
+
   .loader {
     position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; gap: .6rem;
     background: #000; transition: opacity .4s ease, visibility .4s ease;
@@ -40,10 +190,28 @@
   .loader .sub { color: var(--muted); font-size: .75rem; }
   .bar { width: min(16rem, 70vw); height: 2px; background: rgba(45,255,106,.15); }
   .bar > span { display: block; height: 100%; width: 0%; background: var(--green); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  @media (max-width: 640px) {
+    .hud-tr, .hud-br, .reticle { display: none; }
+    .brand-hud h1 { font-size: clamp(2.2rem, 12vw, 3.2rem); letter-spacing: 0.1em; }
+    .credit { font-size: 0.58rem; letter-spacing: 0.08em; }
+  }
 </style>
 </head>
 <body>
 <canvas id="scene"></canvas>
+<div class="scanline" aria-hidden="true"></div>
+
+<div class="corner tl" aria-hidden="true"></div>
+<div class="corner tr" aria-hidden="true"></div>
+<div class="corner bl" aria-hidden="true"></div>
+<div class="corner br" aria-hidden="true"></div>
+<div class="reticle" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
 <div class="loader" id="loader" role="status">
   <p id="loaderMsg">LOADING_</p>
@@ -52,12 +220,30 @@
 </div>
 
 <header class="hud brand-hud">
+  <p class="jp">COMPUTER SCIENCE · MATHEMATICS</p>
   <h1>ASIF BHUIYAN</h1>
+  <span class="rule" aria-hidden="true"></span>
   <nav class="links">
     <a href="https://github.com/asbou45115" target="_blank" rel="noopener noreferrer">github</a>
     <a href="https://www.linkedin.com/in/asif-bhuiyan-832751279/" target="_blank" rel="noopener noreferrer">linkedin</a>
   </nav>
 </header>
+
+<aside class="hud hud-tr" aria-hidden="true">
+  <div><span class="live">LINK</span> STABLE</div>
+  <div>SEC.LAYER // OPEN</div>
+  <div id="hudCoords">X 0.00 · Y 0.00</div>
+</aside>
+
+<aside class="hud hud-br" aria-hidden="true">
+  <div>OPTIC_FEED // ACTIVE</div>
+  <div id="hudFrame">FRAME —— / ——</div>
+</aside>
+
+<p class="credit">
+  ascii by
+  <a href="https://github.com/asbou45115/ascii_renderer" target="_blank" rel="noopener noreferrer">ascii_renderer</a>
+</p>
 
 <script type="module">
 const canvas = document.getElementById("scene");
@@ -66,6 +252,8 @@ const loader = document.getElementById("loader");
 const loaderMsg = document.getElementById("loaderMsg");
 const loaderSub = document.getElementById("loaderSub");
 const loadBar = document.getElementById("loadBar");
+const hudCoords = document.getElementById("hudCoords");
+const hudFrame = document.getElementById("hudFrame");
 
 /** @type {ImageBitmap[]} */
 let frames = [];
@@ -113,7 +301,8 @@ function paint(bmp) {
   if (!bmp) return;
   const cw = canvas.width;
   const ch = canvas.height;
-  const scale = Math.min(cw / bmp.width, ch / bmp.height);
+  // Cover the viewport (crop edges) instead of letterboxing
+  const scale = Math.max(cw / bmp.width, ch / bmp.height);
   const dw = bmp.width * scale;
   const dh = bmp.height * scale;
   const ox = (cw - dw) / 2;
@@ -122,7 +311,16 @@ function paint(bmp) {
   ctx.fillRect(0, 0, cw, ch);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
+  ctx.filter = "brightness(1.55) contrast(1.25) saturate(1.35)";
   ctx.drawImage(bmp, ox, oy, dw, dh);
+  // Soft green lift pass so the ASCII greens read brighter on black
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = 0.12;
+  ctx.filter = "none";
+  ctx.fillStyle = "#0a3a18";
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = "source-over";
 }
 
 /** Map distance-from-center → reverse progress via ring bands (with smooth blend between rings). */
@@ -158,6 +356,10 @@ function setPointer(clientX, clientY, timeStamp) {
   lastPointerTs = ts;
 
   targetProgress = progressFromDistance(cursorDist);
+  if (hudCoords) {
+    hudCoords.textContent =
+      `X ${((clientX / innerWidth) * 100).toFixed(1)} · Y ${((clientY / innerHeight) * 100).toFixed(1)}`;
+  }
 }
 
 window.addEventListener("pointermove", (e) => setPointer(e.clientX, e.clientY, e.timeStamp));
@@ -202,6 +404,10 @@ function tick(ts) {
 
   const frameIndex = Math.round(Math.min(last, Math.max(0, scrub)));
   paint(frames[frameIndex]);
+  if (hudFrame) {
+    hudFrame.textContent =
+      `FRAME ${String(frameIndex + 1).padStart(3, "0")} / ${String(frames.length).padStart(3, "0")}`;
+  }
 }
 requestAnimationFrame(tick);
 
