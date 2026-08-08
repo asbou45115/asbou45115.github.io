@@ -117,6 +117,11 @@
     color: var(--muted);
     line-height: 1.5;
   }
+  .hud-br .cache {
+    color: var(--green);
+    opacity: 0.7;
+  }
+  .hud-br .cache.is-done { display: none; }
 
   .reticle {
     position: fixed;
@@ -181,6 +186,148 @@
   }
   .credit a:hover { border-bottom-color: var(--green-dim); color: var(--ink); }
 
+  /* Terminal: published GitHub Pages endpoints */
+  .term {
+    position: fixed;
+    z-index: 6;
+    left: clamp(0.75rem, 2vw, 1.25rem);
+    bottom: clamp(2.4rem, 5vw, 3.2rem);
+    width: min(22rem, calc(100vw - 1.5rem));
+    max-height: min(40vh, 22rem);
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 8, 4, 0.88);
+    border: 1px solid var(--green-dim);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 24px rgba(45, 255, 106, 0.08);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    transition: width 0.28s ease, opacity 0.28s ease, border-color 0.28s ease;
+    pointer-events: auto;
+  }
+  .term-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.55rem;
+    border-bottom: 1px solid var(--green-dim);
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.68rem;
+    cursor: default;
+    user-select: none;
+  }
+  .term-head .title { flex: 1; }
+  .term-head button {
+    appearance: none;
+    border: 1px solid var(--green-dim);
+    background: transparent;
+    color: var(--green);
+    font: inherit;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 0.15rem 0.4rem;
+    cursor: pointer;
+  }
+  .term-head button:hover { background: rgba(45, 255, 106, 0.12); color: var(--ink); }
+  .term-head .term-close {
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0.05rem 0.35rem 0.15rem;
+  }
+  .term-more {
+    margin: 0.65rem 0 0;
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(45, 255, 106, 0.12);
+    font-size: 0.68rem;
+  }
+  .term-more a {
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .term-more a:hover { color: var(--ink); }
+  .term-body {
+    overflow: auto;
+    padding: 0.55rem 0.65rem 0.7rem;
+    min-height: 4rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--green-dim) transparent;
+  }
+  .term-body::-webkit-scrollbar {
+    width: 4px;
+  }
+  .term-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .term-body::-webkit-scrollbar-thumb {
+    background: var(--green-dim);
+    border-radius: 0;
+  }
+  .term-body::-webkit-scrollbar-thumb:hover {
+    background: var(--green);
+  }
+  .term-status {
+    margin: 0 0 0.45rem;
+    color: var(--muted);
+    font-size: 0.68rem;
+  }
+  .term-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .term-list li {
+    margin: 0 0 0.55rem;
+    padding: 0 0 0.45rem;
+    border-bottom: 1px solid rgba(45, 255, 106, 0.12);
+  }
+  .term-list li:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+  .term-list .name {
+    display: block;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+  }
+  .term-list .name::before { content: "> "; color: var(--green); }
+  .term-list a.endpoint {
+    color: var(--green);
+    text-decoration: none;
+    word-break: break-all;
+    font-size: 0.7rem;
+  }
+  .term-list a.endpoint:hover { color: var(--ink); }
+  .term-list .meta {
+    margin: 0.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.62rem;
+  }
+  .term-list .meta a { color: var(--muted); }
+  .term-list .meta a:hover { color: var(--green); }
+  .term-edge {
+    display: none;
+    appearance: none;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 0.65rem 0.3rem;
+    border: 1px solid var(--green-dim);
+    border-left: 0;
+    border-radius: 0 2px 2px 0;
+    background: rgba(0, 8, 4, 0.92);
+    color: var(--green);
+    font: inherit;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .term-edge:hover { background: rgba(45, 255, 106, 0.12); color: var(--ink); }
+
   .loader {
     position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; gap: .6rem;
     background: #000; transition: opacity .4s ease, visibility .4s ease;
@@ -199,8 +346,28 @@
   @media (max-width: 640px) {
     .hud-tr, .hud-br, .reticle { display: none; }
     .brand-hud h1 { font-size: clamp(2.2rem, 12vw, 3.2rem); letter-spacing: 0.1em; }
-    .credit { font-size: 0.58rem; letter-spacing: 0.08em; }
+    .credit { font-size: 0.58rem; letter-spacing: 0.08em; bottom: 0.65rem; }
+    .term {
+      left: 0.55rem;
+      bottom: 2.1rem;
+      width: min(18.5rem, calc(100vw - 1.1rem));
+      max-height: 36vh;
+    }
   }
+
+  /* Minimized: dock as edge tab (after media so width:0 wins) */
+  .term.is-min {
+    width: 0;
+    max-height: none;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    overflow: visible;
+  }
+  .term.is-min .term-edge { display: block; }
+  .term.is-min .term-body,
+  .term.is-min .term-head { display: none; }
 </style>
 </head>
 <body>
@@ -238,12 +405,29 @@
 <aside class="hud hud-br" aria-hidden="true">
   <div>OPTIC_FEED // ACTIVE</div>
   <div id="hudFrame">FRAME —— / ——</div>
+  <div class="cache" id="hudCache">CACHE 0%</div>
 </aside>
 
 <p class="credit">
   ascii by
   <a href="https://github.com/asbou45115/ascii_renderer" target="_blank" rel="noopener noreferrer">ascii_renderer</a>
 </p>
+
+<section class="term is-min" id="term" aria-label="Projects terminal">
+  <div class="term-head">
+    <span class="title">PROJECTS</span>
+    <button type="button" id="termRefresh" title="Refresh">SYNC</button>
+    <button type="button" id="termToggle" class="term-close" title="Close" aria-label="Close">×</button>
+  </div>
+  <div class="term-body">
+    <p class="term-status" id="termStatus">querying github…</p>
+    <ul class="term-list" id="termList"></ul>
+    <p class="term-more">
+      <a href="https://github.com/asbou45115?tab=repositories" target="_blank" rel="noopener noreferrer">github // all projects →</a>
+    </p>
+  </div>
+  <button type="button" class="term-edge" id="termEdge" aria-label="Open projects">PROJECTS</button>
+</section>
 
 <script type="module">
 const canvas = document.getElementById("scene");
@@ -254,9 +438,13 @@ const loaderSub = document.getElementById("loaderSub");
 const loadBar = document.getElementById("loadBar");
 const hudCoords = document.getElementById("hudCoords");
 const hudFrame = document.getElementById("hudFrame");
+const hudCache = document.getElementById("hudCache");
 
-/** @type {ImageBitmap[]} */
+/** @type {(ImageBitmap|null)[]} */
 let frames = [];
+let frameCount = 0;
+let framesReady = 0;
+let bootstrapped = false;
 let fps = 30;
 /** Continuous scrub position in [0, lastIndex] — 0 = start of clip, last = end (held) */
 let scrub = 0;
@@ -297,7 +485,10 @@ function resize() {
   if (canvas.width !== w || canvas.height !== h) {
     canvas.width = w;
     canvas.height = h;
-    if (frames.length) paint(frames[Math.round(scrub)]);
+    if (bootstrapped && frameCount) {
+      const i = nearestLoaded(Math.round(scrub));
+      if (i >= 0) paint(frames[i]);
+    }
   }
 }
 window.addEventListener("resize", resize);
@@ -391,67 +582,125 @@ setInterval(() => {
  * progress 0 → last frame, progress 1 → first frame.
  * Mouse speed scales how quickly scrub catches the target.
  */
+/**
+ * Scrub toward the ring target.
+ * progress 0 → last frame, progress 1 → first frame.
+ * Uses nearest loaded frame while the cache is still filling.
+ */
+function nearestLoaded(i) {
+  if (!frameCount) return -1;
+  if (frames[i]) return i;
+  for (let d = 1; d < frameCount; d++) {
+    if (i + d < frameCount && frames[i + d]) return i + d;
+    if (i - d >= 0 && frames[i - d]) return i - d;
+  }
+  return -1;
+}
+
 function tick(ts) {
   requestAnimationFrame(tick);
-  if (!frames.length) return;
+  if (!bootstrapped || !frameCount) return;
 
   if (!lastTs) lastTs = ts;
   const dt = Math.min(0.05, (ts - lastTs) / 1000);
   lastTs = ts;
 
-  const last = frames.length - 1;
+  const last = frameCount - 1;
   const targetIndex = last * (1 - targetProgress);
 
-  // Base catch-up + velocity boost (px/s → rate multiplier)
   const speedBoost = Math.min(4.5, velocity / 700);
   const rate = (5.5 + speedBoost * 10) * dt;
 
   scrub += (targetIndex - scrub) * Math.min(1, rate);
   if (Math.abs(targetIndex - scrub) < 0.02) scrub = targetIndex;
 
-  const frameIndex = Math.round(Math.min(last, Math.max(0, scrub)));
+  const want = Math.round(Math.min(last, Math.max(0, scrub)));
+  const frameIndex = nearestLoaded(want);
+  if (frameIndex < 0) return;
+
   paint(frames[frameIndex]);
   if (hudFrame) {
     hudFrame.textContent =
-      `FRAME ${String(frameIndex + 1).padStart(3, "0")} / ${String(frames.length).padStart(3, "0")}`;
+      `FRAME ${String(frameIndex + 1).padStart(3, "0")} / ${String(frameCount).padStart(3, "0")}`;
   }
 }
 requestAnimationFrame(tick);
 
+async function loadOne(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("failed " + url);
+  const blob = await res.blob();
+  return createImageBitmap(blob);
+}
+
+function updateCacheHud() {
+  if (!hudCache || !frameCount) return;
+  const pct = Math.round((framesReady / frameCount) * 100);
+  if (framesReady >= frameCount) {
+    hudCache.textContent = "CACHE OK";
+    hudCache.classList.add("is-done");
+  } else {
+    hudCache.textContent = `CACHE ${pct}%`;
+    hudCache.classList.remove("is-done");
+  }
+  loadBar.style.width = pct + "%";
+  loaderSub.textContent = `${framesReady} / ${frameCount}`;
+}
+
 async function loadFrames() {
-  const res = await fetch("assets/ascii/manifest.json");
+  const res = await fetch("assets/ascii/manifest.json", { cache: "force-cache" });
   if (!res.ok) {
     throw new Error("manifest missing — run: cd tools/precompute_ascii && uv sync && uv run python main.py");
   }
   const manifest = await res.json();
   fps = manifest.fps || 30;
   const list = manifest.frames || [];
-  frames = new Array(list.length);
-  let loaded = 0;
+  frameCount = list.length;
+  frames = new Array(frameCount).fill(null);
+  framesReady = 0;
 
-  const concurrency = 8;
+  if (!frameCount) throw new Error("manifest has no frames");
+
+  // 1) Critical path: last frame (+ a few neighbors for end-state idle feel)
+  const last = frameCount - 1;
+  const critical = [];
+  for (let i = 0; i < Math.min(8, frameCount); i++) critical.push(last - i);
+
+  await Promise.all(critical.map(async (i) => {
+    if (frames[i]) return;
+    frames[i] = await loadOne(list[i]);
+    framesReady += 1;
+    updateCacheHud();
+  }));
+
+  scrub = last;
+  targetProgress = 0;
+  paint(frames[last]);
+  bootstrapped = true;
+  loader.classList.add("is-done");
+
+  // 2) Background: fill remaining frames from end → start (matches scrub usage)
+  const remaining = [];
+  for (let i = last; i >= 0; i--) {
+    if (!frames[i]) remaining.push(i);
+  }
+
+  const concurrency = 4;
   let cursor = 0;
   async function worker() {
-    while (cursor < list.length) {
-      const i = cursor++;
-      const url = list[i];
-      const img = await fetch(url).then((r) => {
-        if (!r.ok) throw new Error("failed " + url);
-        return r.blob();
-      });
-      frames[i] = await createImageBitmap(img);
-      loaded += 1;
-      loadBar.style.width = Math.round((loaded / list.length) * 100) + "%";
-      loaderSub.textContent = `${loaded} / ${list.length}`;
+    while (cursor < remaining.length) {
+      const i = remaining[cursor++];
+      try {
+        frames[i] = await loadOne(list[i]);
+        framesReady += 1;
+        updateCacheHud();
+      } catch (err) {
+        console.warn("frame load failed", list[i], err);
+      }
     }
   }
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
-
-  // Held on the last frame until the cursor enters the outer ring
-  scrub = frames.length - 1;
-  targetProgress = 0;
-  paint(frames[frames.length - 1]);
-  loader.classList.add("is-done");
+  updateCacheHud();
 }
 
 loadFrames().catch((err) => {
@@ -459,6 +708,134 @@ loadFrames().catch((err) => {
   loaderMsg.textContent = "ASCII_FRAMES_MISSING";
   loaderSub.textContent = String(err.message || err);
 });
+
+/* ---- TERM_01: published GitHub Pages endpoints ---- */
+const GITHUB_USER = "asbou45115";
+const term = document.getElementById("term");
+const termList = document.getElementById("termList");
+const termStatus = document.getElementById("termStatus");
+const termToggle = document.getElementById("termToggle");
+const termEdge = document.getElementById("termEdge");
+const termRefresh = document.getElementById("termRefresh");
+const TERM_KEY = "term-endpoints-min";
+
+function setTermMin(min) {
+  term.classList.toggle("is-min", min);
+  term.setAttribute("aria-expanded", min ? "false" : "true");
+  try { localStorage.setItem(TERM_KEY, min ? "1" : "0"); } catch (_) {}
+}
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function pagesUrl(repoName) {
+  if (repoName.toLowerCase() === `${GITHUB_USER}.github.io`) {
+    return `https://${GITHUB_USER}.github.io/`;
+  }
+  return `https://${GITHUB_USER}.github.io/${repoName}/`;
+}
+
+async function fetchAllPublicRepos() {
+  const all = [];
+  let page = 1;
+  while (true) {
+    const response = await fetch(
+      `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated&page=${page}`
+    );
+    if (!response.ok) throw new Error(`GitHub API error (${response.status})`);
+    const repos = await response.json();
+    all.push(...repos);
+    if (repos.length < 100) break;
+    page += 1;
+  }
+  return all;
+}
+
+function renderTermEndpoints(repos) {
+  termList.innerHTML = "";
+  if (!repos.length) {
+    termList.innerHTML = `<li class="meta">No public Pages endpoints found.</li>`;
+    return;
+  }
+  for (const repo of repos) {
+    // Skip the user site itself — this page is already it
+    if (repo.name.toLowerCase() === `${GITHUB_USER}.github.io`) continue;
+    const url = pagesUrl(repo.name);
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class="name">${escapeHtml(repo.name)}</span>
+      <a class="endpoint" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>
+      <p class="meta">upd ${escapeHtml(formatDate(repo.updated_at))} · <a href="${escapeHtml(repo.html_url)}" target="_blank" rel="noopener noreferrer">repo</a></p>
+    `;
+    termList.appendChild(li);
+  }
+  if (!termList.children.length) {
+    termList.innerHTML = `<li class="meta">No project Pages endpoints yet.</li>`;
+  }
+}
+
+async function loadTermEndpoints() {
+  termStatus.textContent = "querying github…";
+  termRefresh.disabled = true;
+  try {
+    const repos = await fetchAllPublicRepos();
+    const pages = repos
+      .filter((r) => !r.fork && r.has_pages)
+      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    renderTermEndpoints(pages);
+    const shown = [...termList.querySelectorAll("li .name")].length;
+    termStatus.textContent = `ok · ${shown} endpoint${shown === 1 ? "" : "s"}`;
+  } catch (err) {
+    termList.innerHTML = "";
+    termStatus.textContent = String(err.message || err);
+  } finally {
+    termRefresh.disabled = false;
+  }
+}
+
+// Default minimized on narrow screens; restore preference otherwise
+(() => {
+  let min = true;
+  try {
+    const saved = localStorage.getItem(TERM_KEY);
+    if (saved === "0" || saved === "1") min = saved === "1";
+    else min = window.matchMedia("(max-width: 640px)").matches;
+  } catch (_) {
+    min = window.matchMedia("(max-width: 640px)").matches;
+  }
+  setTermMin(min);
+})();
+
+termToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+  setTermMin(!term.classList.contains("is-min"));
+});
+termEdge.addEventListener("click", (e) => {
+  e.stopPropagation();
+  setTermMin(false);
+});
+termRefresh.addEventListener("click", (e) => {
+  e.stopPropagation();
+  loadTermEndpoints();
+});
+
+// Keep canvas scrub from treating terminal drags as page interaction noise — stop bubble on panel
+term.addEventListener("pointerdown", (e) => e.stopPropagation());
+
+loadTermEndpoints();
 </script>
 </body>
 </html>
